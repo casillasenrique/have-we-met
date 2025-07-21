@@ -1,4 +1,3 @@
-import { Nav } from "@/app/components/Nav";
 import { useParams } from "next/navigation";
 
 export default function Game() {
@@ -7,7 +6,6 @@ export default function Game() {
 
     return (
         <div>
-            <Nav />
             Game ID: {id}
         </div>
     );
