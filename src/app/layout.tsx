@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import "./globals.css";
 import { usePathname } from "next/navigation";
 import { Nav } from "./components/Nav";
 
