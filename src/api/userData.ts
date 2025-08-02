@@ -1,0 +1,113 @@
+/**
+ * API for user data, stored using localStorage.
+ */
+
+export interface Guess {
+  value: string; // Single string property
+}
+
+export interface GameData {
+  id: number; // Game ID
+  completed: boolean; // Whether the game is completed
+  won: boolean; // Whether the game was won
+  guesses: Guess[]; // Array of Guess objects
+}
+
+export interface UserData {
+  playedGames: GameData[]; // Array of GameData objects
+}
+
+const USER_DATA_KEY = "userData";
+
+function createUserData(): UserData {
+  console.log("Creating new user data in localStorage");
+  const defaultData: UserData = { playedGames: [] };
+
+  // Initialize user data in localStorage
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(defaultData));
+
+  return defaultData;
+}
+
+/**
+ * Gets or creates user data in localStorage.
+ * If user data does not exist, it initializes it with default values.
+ *
+ * @returns {UserData} The user data object.
+ */
+export function getOrCreateUserData(): UserData {
+  const userData = localStorage.getItem(USER_DATA_KEY);
+
+  if (userData) {
+    try {
+      const data = JSON.parse(userData) as UserData;
+      console.log("Retrieved user data from localStorage.");
+      return data;
+    } catch {
+      console.warn("Failed to parse user data, resetting to default values");
+      // If parsing fails, reset to default
+      return createUserData();
+    }
+  }
+
+  // If no user data exists, create it
+  return createUserData();
+}
+
+/**
+ * Gets or creates game data for a specific game ID.
+ * If the game does not exist, it initializes it with default values.
+ *
+ * @param {number} gameId - The ID of the game.
+ * @returns {GameData} The game data object.
+ */
+export function getOrCreateGameData(gameId: number): GameData {
+  const userData = getOrCreateUserData();
+
+  // Check if the game already exists
+  let gameData = userData.playedGames.find((game) => game.id === gameId);
+
+  if (!gameData) {
+    // If the game does not exist, create a new one with default values
+    gameData = {
+      id: gameId,
+      completed: false,
+      won: false,
+      guesses: [],
+    };
+    userData.playedGames.push(gameData);
+  }
+
+  // Save updated user data back to localStorage
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+
+  return gameData;
+}
+
+/**
+ * Adds a guess to a user's played game.
+ *
+ * Note: Assumes the game already exists in user data.
+ *
+ * @param {number} gameId - The ID of the game.
+ * @param {Guess} guess - The guess to add.
+ */
+export function addGuessToGame(gameId: number, guess: Guess): void {
+  const userData = getOrCreateUserData();
+
+  // Find the game by ID
+  const game = userData.playedGames.find((g) => g.id === gameId);
+
+  if (game) {
+    // If the game exists, add the guess
+    game.guesses.push(guess);
+  } else {
+    console.error(
+      `Game with ID ${gameId} not found in user data. Could not add guess.`
+    );
+    return;
+  }
+
+  // Save updated user data back to localStorage
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+}
