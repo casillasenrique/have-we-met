@@ -9,4 +9,4 @@ export const CLUE_ACCESSORS = {
 
 const MEDIUM_ACCESSOR = "medium";
 const DIMENSIONS_ACCESSOR = "dimensions";
-const OBJECT_NAME_ACCESSOR = "objectName";
+export const OBJECT_NAME_ACCESSOR = "objectName";
