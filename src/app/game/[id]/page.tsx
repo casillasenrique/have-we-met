@@ -97,7 +97,7 @@ export default async function Game({ params }: { params: { id: string } }) {
     return (
       <div>
         <h1>Game ID: {id}</h1>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <p>Object ID: {data.objectID}</p>
         <p>Title: {data.title}</p>
         <p>Artist: {data.artistDisplayName}</p>
@@ -114,5 +114,3 @@ export default async function Game({ params }: { params: { id: string } }) {
     );
   }
 }
-
-

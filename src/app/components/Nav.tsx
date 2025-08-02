@@ -1,32 +1,53 @@
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Nav() {
-    return (
-        <nav className="flex items-center p-4 bg-gray-100">
-            <div className="font-bold text-lg">Logo</div>
-            <ul className="flex list-none m-0 ml-8 p-0 gap-6">
-                <li>
-                    <Link href="/" className="hover:underline">
-                        Home
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/archive" className="hover:underline">
-                        Archive
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/gallery" className="hover:underline">
-                        Gallery
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/game" className="hover:underline">
-                        Game
-                    </Link>
-                </li>
-            </ul>
-        </nav>
-    );
+  const pathname = usePathname();
+
+  return (
+    <nav className="sticky top-0 z-50 flex items-center p-4 bg-primary text-white justify-between">
+      <div className="text-lg w-[100px] leading-snug">
+        <p>have we MET?</p>
+      </div>
+      <ul className="flex items-center list-none m-0 ml-8 p-0 gap-6">
+        <li>
+          <Link
+            href="/game/436530"
+            className={
+              pathname === "/game/436530"
+                ? `underline underline-offset-8`
+                : "hover:underline hover:underline-offset-8"
+            }
+          >
+            today
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/archive"
+            className={
+              pathname === "/archive"
+                ? `underline underline-offset-8`
+                : "hover:underline hover:underline-offset-8"
+            }
+          >
+            archive
+          </Link>
+        </li>
+        <li>
+          <Link
+            href="/gallery"
+            className={
+              pathname === "/gallery"
+                ? `underline underline-offset-8`
+                : "hover:underline hover:underline-offset-8"
+            }
+          >
+            gallery
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
 }

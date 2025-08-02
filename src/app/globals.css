@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #ea0028;
+}
+
+@theme {
+  --color-primary: var(--primary);
 }
 
 @theme inline {
