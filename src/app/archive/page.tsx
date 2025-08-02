@@ -20,7 +20,15 @@ export default function Archive() {
   // Create an array of arrays (weeks)
   const weeks = [];
   for (let i = 0; i < archiveDays.length; i += 7) {
-    weeks.push(archiveDays.slice(i, i + 7).reverse());
+    // Slice the array into chunks of 7 days
+    const week = archiveDays.slice(i, i + 7);
+
+    // Fill the week with empty days if it has less than 7 days
+    while (week.length < 7) {
+      week.push({ date: "", gameNumber: 0 });
+    }
+
+    weeks.push(week.reverse()); // Reverse the week to have the most recent day on the left
   }
 
   return (
@@ -42,14 +50,24 @@ export default function Archive() {
               key={`${weekIndex}-${dayIndex}`}
               className="flex flex-col items-center"
             >
-              <div className="w-10 h-10 border-2 border-primary rounded-full mb-1 hover:bg-primary transition-colors duration-150">
-                <Link
-                  href={`/game/${gameNumber}`}
-                  className="flex items-center justify-center h-full text-primary"
-                ></Link>
-              </div>
-              <span className="text-xs font-bold text-primary">{gameNumber}</span>
-              <span className="text-xs text-primary">{date}</span>
+              {gameNumber === 0 ? (
+                // Placeholder for empty days
+                <div className="w-10 h-10 border-2 border-gray-300 rounded-full mb-1"></div>
+              ) : (
+                // Game circle with link to game page
+                <>
+                  <div className="w-10 h-10 border-2 border-primary rounded-full mb-1 hover:bg-primary transition-colors duration-150">
+                    <Link
+                      href={`/game/${gameNumber}`}
+                      className="flex items-center justify-center h-full text-primary"
+                    ></Link>
+                  </div>
+                  <span className="text-xs font-bold text-primary">
+                    {gameNumber}
+                  </span>
+                  <span className="text-xs text-primary">{date}</span>
+                </>
+              )}
             </div>
           ))
         )}
