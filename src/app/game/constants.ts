@@ -7,6 +7,6 @@ export const CLUE_ACCESSORS = {
   artistDisplayName: { title: "Artist Name" },
 };
 
-const MEDIUM_ACCESSOR = "medium";
-const DIMENSIONS_ACCESSOR = "dimensions";
-export const OBJECT_NAME_ACCESSOR = "objectName";
+export const MEDIUM_ACCESSOR = "medium";
+export const DIMENSIONS_ACCESSOR = "dimensions";
+export const OBJECT_TITLE_ACCESSOR = "title";

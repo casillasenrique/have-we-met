@@ -3,7 +3,12 @@ import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { PixelatedImage } from "./PixelatedImage";
-import { CLUE_ACCESSORS, OBJECT_NAME_ACCESSOR } from "../constants";
+import {
+  CLUE_ACCESSORS,
+  OBJECT_TITLE_ACCESSOR,
+  MEDIUM_ACCESSOR,
+  DIMENSIONS_ACCESSOR,
+} from "../constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
 
@@ -16,9 +21,10 @@ export function GameView({ id, data }: { id: number; data: any }) {
     )
     .slice(0, 5);
 
-  const solution = data[OBJECT_NAME_ACCESSOR];
+  const solution = data[OBJECT_TITLE_ACCESSOR];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clueCount, setClueCount] = useState(0);
+  const revealed = clueCount > clueKeys.length;
 
   const handleSubmitGuess = (guess: string) => {
     // Handle guess submission logic here
@@ -45,6 +51,8 @@ export function GameView({ id, data }: { id: number; data: any }) {
   return (
     <>
       <div>
+        {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+        <Banner id={id} data={data} revealed={revealed} />
         <PixelatedImage src={data.primaryImage} />
         <div className="flex flex-col gap-4 p-6">
           {clueKeys.map((key, index) => (
@@ -55,7 +63,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
               visible={clueCount > index}
             />
           ))}
-          {clueCount <= clueKeys.length ? (
+          {!revealed ? (
             <div className="pt-4 flex justify-end gap-2">
               <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                 Guess
@@ -88,6 +96,40 @@ export function GameView({ id, data }: { id: number; data: any }) {
         onSubmit={handleSubmitGuess}
       />
     </>
+  );
+}
+
+function Banner({
+  id,
+  data,
+  revealed,
+}: {
+  id: number;
+  data: any;
+  revealed: boolean;
+}) {
+  return (
+    <div className="bg-white p-4">
+      {revealed ? (
+        <>
+          <p>#{id}</p>
+          <h1 className="text-2xl font-bold">{data[OBJECT_TITLE_ACCESSOR]}</h1>
+          <p className="text-sm">
+            {data.artistDisplayName}, {data.objectDate}
+          </p>
+          <p className="text-sm">
+            {data[MEDIUM_ACCESSOR]}, {data[DIMENSIONS_ACCESSOR]}
+          </p>
+        </>
+      ) : (
+        <>
+          <h1 className="text-2xl font-bold">Have you MET #{id}?</h1>
+          <p className="text-sm text-primary">
+            {data[MEDIUM_ACCESSOR]}, {data[DIMENSIONS_ACCESSOR]}
+          </p>
+        </>
+      )}
+    </div>
   );
 }
 

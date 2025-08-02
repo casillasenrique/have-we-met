@@ -96,6 +96,7 @@ export default async function Game({ params }: { params: { id: string } }) {
   } catch (error) {
     return (
       <div>
+        {/* TODO: error screen */}
         <h1>Error</h1>
         <p>{(error as Error).message}</p>
       </div>
