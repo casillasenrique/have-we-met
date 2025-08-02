@@ -1,34 +1,49 @@
 import React from "react";
 import Link from "next/link";
 
+const DAYS_IN_WEEK = 7;
+const DAYS_IN_WEEK_STRINGS = ["s", "m", "t", "w", "th", "f", "s"];
+
 export default function Archive() {
   const today = new Date();
-  const daysInWeek = ["s", "m", "t", "w", "th", "f", "s"];
-  const totalGames = 54; // Example total number of games
+  const totalGames = 100; // TODO: Replace with the actual number of games in the archive
   const archiveDays = Array.from({ length: totalGames }, (_, index) => {
     const date = new Date();
     date.setDate(today.getDate() - index);
     return {
-      date: date.toLocaleDateString("en-US", {
+      dateString: date.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       }),
+      dayOfWeekIdx: date.getDay(),
       gameNumber: totalGames - index, // Game numbers count down from totalGames
     };
   });
 
-  // Create an array of arrays (weeks)
+  const emptyDay = { dateString: "", gameNumber: 0, dayOfWeekIdx: 0 };
+
+  // We might not be done with the latest week, so fill it with placeholders.
+  // For example, if today is a Thursday, we need empty slots for Friday, Saturday, and Sunday
+  const firstDayOfWeekIdx = archiveDays[0].dayOfWeekIdx;
+  const daysLeftInWeek = DAYS_IN_WEEK - firstDayOfWeekIdx - 1;
+  console.log(
+    `First day of the week index: ${firstDayOfWeekIdx}, ${daysLeftInWeek} days left in the week`
+  );
+  for (let i = 0; i < daysLeftInWeek; i++) {
+    archiveDays.unshift(emptyDay);
+  }
+
+  // Create an array of weeks so we can display them in the grid correctly
+  // Each week will have 7 days, and we reverse the order so the most recent day is on the left
   const weeks = [];
-  for (let i = 0; i < archiveDays.length; i += 7) {
-    // Slice the array into chunks of 7 days
-    const week = archiveDays.slice(i, i + 7);
+  for (let i = 0; i < archiveDays.length; i += DAYS_IN_WEEK) {
+    const week = archiveDays.slice(i, i + DAYS_IN_WEEK);
 
-    // Fill the week with empty days if it has less than 7 days
-    while (week.length < 7) {
-      week.push({ date: "", gameNumber: 0 });
+    // The last week might not have 7 days, so fill it with empty days
+    while (week.length < DAYS_IN_WEEK) {
+      week.push(emptyDay);
     }
-
-    weeks.push(week.reverse()); // Reverse the week to have the most recent day on the left
+    weeks.push(week.reverse());
   }
 
   return (
@@ -39,13 +54,13 @@ export default function Archive() {
       </p>
       <div className="grid grid-cols-7 gap-4 text-center">
         {/* Days of the week */}
-        {daysInWeek.map((day, index) => (
+        {DAYS_IN_WEEK_STRINGS.map((day, index) => (
           <div key={index} className="text-xl font-bold text-primary">
             {day}
           </div>
         ))}
         {weeks.map((week, weekIndex) =>
-          week.map(({ date, gameNumber }, dayIndex) => (
+          week.map(({ dateString, gameNumber }, dayIndex) => (
             <div
               key={`${weekIndex}-${dayIndex}`}
               className="flex flex-col items-center"
@@ -55,18 +70,16 @@ export default function Archive() {
                 <div className="w-10 h-10 border-2 border-gray-300 rounded-full mb-1"></div>
               ) : (
                 // Game circle with link to game page
-                <>
-                  <div className="w-10 h-10 border-2 border-primary rounded-full mb-1 hover:bg-primary transition-colors duration-150">
-                    <Link
-                      href={`/game/${gameNumber}`}
-                      className="flex items-center justify-center h-full text-primary"
-                    ></Link>
-                  </div>
+                <Link
+                  href={`/game/${gameNumber}`}
+                  className="flex flex-col items-center w-full"
+                >
+                  <div className="w-10 h-10 border-2 border-primary rounded-full mb-1 hover:bg-primary transition-colors duration-150"></div>
                   <span className="text-xs font-bold text-primary">
                     {gameNumber}
                   </span>
-                  <span className="text-xs text-primary">{date}</span>
-                </>
+                  <span className="text-xs text-primary">{dateString}</span>
+                </Link>
               )}
             </div>
           ))
