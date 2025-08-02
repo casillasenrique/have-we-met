@@ -1,6 +1,5 @@
 import React from "react";
-import PixelatedImage from "./PixelatedImage";
-
+import { GameView } from "../components/GameView";
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for this route
 
 /**
@@ -93,18 +92,7 @@ export default async function Game({ params }: { params: { id: string } }) {
 
   try {
     const data = await fetchGameData(gameId);
-
-    return (
-      <div>
-        <h1>Game ID: {id}</h1>
-        {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-        <p>Object ID: {data.objectID}</p>
-        <p>Title: {data.title}</p>
-        <p>Artist: {data.artistDisplayName}</p>
-        <p>Gallery: {data.GalleryNumber}</p>
-        <PixelatedImage src={data.primaryImage} />
-      </div>
-    );
+    return <GameView id={gameId} data={data} />;
   } catch (error) {
     return (
       <div>

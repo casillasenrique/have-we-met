@@ -48,7 +48,7 @@ export default function Archive() {
 
   return (
     <div className="p-6">
-      <h1 className="text-black text-2xl font-bold mb-4">Play the archive</h1>
+      <h1 className="text-black text-2xl font-bold mb-1">Play the archive</h1>
       <p className="text-sm text-gray-600 mb-6">
         Click on a circle to guess the MET object of that day
       </p>

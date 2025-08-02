@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import { useEffect, useRef } from "react";
 
-export default function PixelatedImage({ src }: { src: string }) {
+export function PixelatedImage({ src }: { src: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
