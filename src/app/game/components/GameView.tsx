@@ -109,15 +109,19 @@ function Banner({
   revealed: boolean;
 }) {
   return (
-    <div className="bg-white p-4">
+    <div className="bg-white p-4 sticky top-20 z-40 border-b border-primary">
       {revealed ? (
         <>
           <p>#{id}</p>
-          <h1 className="text-2xl font-bold">{data[OBJECT_TITLE_ACCESSOR]}</h1>
-          <p className="text-sm">
+          <h1 className="text-2xl font-bold">
+            {data[OBJECT_TITLE_ACCESSOR]}{" "}
+            <sup className="text-primary text-sm">[ ]</sup>
+          </h1>
+          {/* TODO: make sure this exists */}
+          <p className="text-sm font-light">
             {data.artistDisplayName}, {data.objectDate}
           </p>
-          <p className="text-sm">
+          <p className="text-sm font-light">
             {data[MEDIUM_ACCESSOR]}, {data[DIMENSIONS_ACCESSOR]}
           </p>
         </>
