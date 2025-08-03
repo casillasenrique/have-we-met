@@ -3,6 +3,7 @@
  */
 
 export enum GameStatus {
+  NOT_PLAYED = "NOT_PLAYED",
   IN_PROGRESS = "IN_PROGRESS",
   WON = "WON",
   LOST = "LOST",
@@ -72,7 +73,7 @@ export function getOrCreateGameData(gameId: number): GameData {
     // If the game does not exist, create a new one with default values
     gameData = {
       id: gameId,
-      status: GameStatus.IN_PROGRESS, // Default status
+      status: GameStatus.IN_PROGRESS, // Default status when a game is created
       guesses: [],
     };
     userData.playedGames.push(gameData);

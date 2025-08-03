@@ -1,8 +1,14 @@
 import React from "react";
-import Link from "next/link";
+import ArchiveView from "./ArchiveView";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_WEEK_STRINGS = ["s", "m", "t", "w", "th", "f", "s"];
+
+export interface ArchiveDay {
+  dateString: string; // Formatted date string (e.g., "Jan 1")
+  gameId: number; // Game number for that day
+  dayOfWeekIdx: number; // Index of the day in the week (0-6)
+}
 
 export default function Archive() {
   const today = new Date();
@@ -16,11 +22,11 @@ export default function Archive() {
         day: "numeric",
       }),
       dayOfWeekIdx: date.getDay(),
-      gameNumber: totalGames - index, // Game numbers count down from totalGames
-    };
+      gameId: totalGames - index, // Game numbers count down from totalGames
+    } as ArchiveDay;
   });
 
-  const emptyDay = { dateString: "", gameNumber: 0, dayOfWeekIdx: 0 };
+  const emptyDay = { dateString: "", gameId: 0, dayOfWeekIdx: 0 };
 
   // We might not be done with the latest week, so fill it with placeholders.
   // For example, if today is a Thursday, we need empty slots for Friday, Saturday, and Sunday
@@ -35,7 +41,7 @@ export default function Archive() {
 
   // Create an array of weeks so we can display them in the grid correctly
   // Each week will have 7 days, and we reverse the order so the most recent day is on the left
-  const weeks = [];
+  const weeks: ArchiveDay[][] = [];
   for (let i = 0; i < archiveDays.length; i += DAYS_IN_WEEK) {
     const week = archiveDays.slice(i, i + DAYS_IN_WEEK);
 
@@ -45,6 +51,11 @@ export default function Archive() {
     }
     weeks.push(week.reverse());
   }
+
+  console.log(
+    "Successfully created weeks for archive, total weeks:",
+    weeks.length
+  );
 
   return (
     <div className="p-6">
@@ -59,31 +70,7 @@ export default function Archive() {
             {day}
           </div>
         ))}
-        {weeks.map((week, weekIndex) =>
-          week.map(({ dateString, gameNumber }, dayIndex) => (
-            <div
-              key={`${weekIndex}-${dayIndex}`}
-              className="flex flex-col items-center"
-            >
-              {gameNumber === 0 ? (
-                // Placeholder for empty days
-                <div className="w-10 h-10 border-2 border-gray-300 rounded-full mb-1"></div>
-              ) : (
-                // Game circle with link to game page
-                <Link
-                  href={`/game/${gameNumber}`}
-                  className="flex flex-col items-center w-full"
-                >
-                  <div className="w-10 h-10 border-2 border-primary rounded-full mb-1 hover:bg-primary transition-colors duration-150"></div>
-                  <span className="text-xs font-bold text-primary">
-                    {gameNumber}
-                  </span>
-                  <span className="text-xs text-primary">{dateString}</span>
-                </Link>
-              )}
-            </div>
-          ))
-        )}
+        <ArchiveView weeks={weeks} />
       </div>
     </div>
   );
