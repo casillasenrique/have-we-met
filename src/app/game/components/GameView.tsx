@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { PixelatedImage } from "./PixelatedImage";
@@ -14,6 +14,12 @@ import {
 } from "../constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
+import {
+  addGuessToGame,
+  finishGame,
+  getOrCreateGameData,
+  Guess,
+} from "@/api/userData";
 
 export function GameView({ id, data }: { id: number; data: any }) {
   const clueKeys = (
@@ -33,9 +39,12 @@ export function GameView({ id, data }: { id: number; data: any }) {
   const handleSubmitGuess = (guess: string) => {
     // Handle guess submission logic here
     console.log("Guess submitted: ", guess);
+    addGuessToGame(id, { value: guess } as Guess);
     if (guess.toLowerCase() === solution.toLowerCase()) {
       console.log("Correct guess!");
       // Handle correct guess logic here
+      // Mark the game as finished and won
+      finishGame(id, true);
     } else {
       console.log("Incorrect guess. Try again!");
       // Handle incorrect guess logic here
@@ -45,12 +54,25 @@ export function GameView({ id, data }: { id: number; data: any }) {
 
   const handleSkip = () => {
     setClueCount((prevCount) => prevCount + 1);
+
+    // Store the guess in the game data as an empty guess
+    addGuessToGame(id, { value: "" } as Guess);
     if (clueCount >= clueKeys.length) {
       // put logic for losing
       console.log("No more clues available to skip. GAME OVER");
+      finishGame(id, false);
       return;
     }
   };
+
+  useEffect(() => {
+    console.log(`Fetching existing game data for ID: ${id}`);
+    const cachedData = getOrCreateGameData(id);
+    console.log(
+      `Fetched cached data, game completed: ${cachedData.completed}; clues guessed: ${cachedData.guesses.length}`
+    );
+    setClueCount(cachedData.guesses.length);
+  }, []);
 
   return (
     <>
