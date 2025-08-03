@@ -40,9 +40,7 @@ export function getOrCreateUserData(): UserData {
 
   if (userData) {
     try {
-      const data = JSON.parse(userData) as UserData;
-      console.log("Retrieved user data from localStorage.");
-      return data;
+      return JSON.parse(userData) as UserData;
     } catch {
       console.warn("Failed to parse user data, resetting to default values");
       // If parsing fails, reset to default
@@ -76,10 +74,10 @@ export function getOrCreateGameData(gameId: number): GameData {
       guesses: [],
     };
     userData.playedGames.push(gameData);
-  }
 
-  // Save updated user data back to localStorage
-  localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+    // Save new user data back to localStorage
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+  }
 
   return gameData;
 }
@@ -110,4 +108,32 @@ export function addGuessToGame(gameId: number, guess: Guess): void {
 
   // Save updated user data back to localStorage
   localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+}
+
+/**
+ * Marks a game as finished (and optionally won).
+ * If the game does not exist, it logs an error.
+ * @param {number} gameId - The ID of the game to finish.
+ * @param {boolean} won - Whether the game was won or not.
+ */
+export function finishGame(gameId: number, won: boolean): void {
+  const userData = getOrCreateUserData();
+
+  // Find the game by ID
+  const game = userData.playedGames.find((g) => g.id === gameId);
+
+  if (game) {
+    // If the game exists, mark it as completed and set won status
+    game.completed = true;
+    game.won = won;
+
+    // Save updated user data back to localStorage
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+
+    console.log(`Game with ID ${gameId} marked as finished. Won: ${won}`);
+  } else {
+    console.error(
+      `Game with ID ${gameId} not found in user data. Could not finish game.`
+    );
+  }
 }
