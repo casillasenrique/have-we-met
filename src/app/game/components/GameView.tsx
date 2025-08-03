@@ -98,11 +98,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
     <>
       <div>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-        <Banner
-          id={id}
-          data={data}
-          revealed={gameStatus !== GameStatus.IN_PROGRESS}
-        />
+        <Banner id={id} data={data} gameStatus={gameStatus} />
         <PixelatedImage src={data.primaryImage} />
         <div className="flex flex-col gap-4 p-4">
           {clueKeys.map((key, index) => (
@@ -165,11 +161,11 @@ export function GameView({ id, data }: { id: number; data: any }) {
 function Banner({
   id,
   data,
-  revealed,
+  gameStatus,
 }: {
   id: number;
   data: any;
-  revealed: boolean;
+  gameStatus: GameStatus;
 }) {
   const formatAttributes = (attributes: Array<string | undefined>) => {
     const attributesArray: Array<string> = [];
@@ -183,9 +179,16 @@ function Banner({
   };
   return (
     <div className="bg-white p-4 sticky top-20 z-40 border-b border-primary">
-      {revealed ? (
+      {gameStatus !== GameStatus.IN_PROGRESS ? (
         <>
-          <p>#{id}</p>
+          <div className="flex items-center gap-1">
+            <p>#{id}</p>
+            {gameStatus === GameStatus.WON ? (
+              <span className="material-icons text-green-500">check</span>
+            ) : (
+              <span className="material-icons text-red-500">close</span>
+            )}
+          </div>
           <h1 className="text-2xl font-bold">
             {data[OBJECT_TITLE_ACCESSOR]}{" "}
             {data[OBJECT_URL_ACCESSOR] && (
