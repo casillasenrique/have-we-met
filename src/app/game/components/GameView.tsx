@@ -111,7 +111,10 @@ export function GameView({ id, data }: { id: number; data: any }) {
                 key={key}
                 title={CLUE_ACCESSORS[key].title}
                 detail={data[key]}
-                visible={guesses.length > index}
+                visible={
+                  guesses.length > index ||
+                  gameStatus !== GameStatus.IN_PROGRESS
+                }
               />
               {guesses.length > index && (
                 <p className="text-xs text-gray-500">
