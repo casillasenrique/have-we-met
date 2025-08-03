@@ -10,6 +10,7 @@ import {
   DIMENSIONS_ACCESSOR,
   ARTIST_NAME_ACCESSOR,
   OBJECT_DATE_ACCESSOR,
+  OBJECT_URL_ACCESSOR,
 } from "../constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
@@ -128,7 +129,17 @@ function Banner({
           <p>#{id}</p>
           <h1 className="text-2xl font-bold">
             {data[OBJECT_TITLE_ACCESSOR]}{" "}
-            <sup className="text-primary text-sm">[ ]</sup>
+            {data[OBJECT_URL_ACCESSOR] && (
+              <a
+                href={data[OBJECT_URL_ACCESSOR]}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="material-icons text-primary text-xs">
+                  open_in_new
+                </span>
+              </a>
+            )}
           </h1>
           {/* TODO: make sure this exists */}
           <p className="text-sm font-light">
@@ -168,9 +179,13 @@ function Clue({
   return (
     <div className="flex flex-col gap-2">
       <p className="text-primary font-medium">{title}</p>
-      <div className="flex justify-between items-center w-full border border-primary p-2">
+      <div className="flex justify-between items-center w-full border border-primary p-2 gap-6">
         <p>{visible && detail}</p>
-        {visible ? <p>eye opened</p> : <p>eye closed</p>}
+        {visible ? (
+          <span className="material-icons text-primary">lock_open</span>
+        ) : (
+          <span className="material-icons text-primary">lock</span>
+        )}
       </div>
     </div>
   );

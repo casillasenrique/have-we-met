@@ -3,6 +3,7 @@ export const DIMENSIONS_ACCESSOR = "dimensions";
 export const OBJECT_TITLE_ACCESSOR = "title";
 export const ARTIST_NAME_ACCESSOR = "artistDisplayName";
 export const OBJECT_DATE_ACCESSOR = "objectDate";
+export const OBJECT_URL_ACCESSOR = "objectURL";
 
 export const CLUE_ACCESSORS = {
   Department: { title: "Department" },
