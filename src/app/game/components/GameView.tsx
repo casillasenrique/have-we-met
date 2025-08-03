@@ -69,7 +69,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
     console.log(`Fetching existing game data for ID: ${id}`);
     const cachedData = getOrCreateGameData(id);
     console.log(
-      `Fetched cached data, game completed: ${cachedData.completed}; clues guessed: ${cachedData.guesses.length}`
+      `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
     setClueCount(cachedData.guesses.length);
   }, []);

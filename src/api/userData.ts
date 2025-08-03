@@ -2,14 +2,19 @@
  * API for user data, stored using localStorage.
  */
 
+export enum GameStatus {
+  IN_PROGRESS = "IN_PROGRESS",
+  WON = "WON",
+  LOST = "LOST",
+}
+
 export interface Guess {
   value: string; // Single string property
 }
 
 export interface GameData {
   id: number; // Game ID
-  completed: boolean; // Whether the game is completed
-  won: boolean; // Whether the game was won
+  status: GameStatus; // Game status (IN_PROGRESS, WON, LOST)
   guesses: Guess[]; // Array of Guess objects
 }
 
@@ -32,8 +37,6 @@ function createUserData(): UserData {
 /**
  * Gets or creates user data in localStorage.
  * If user data does not exist, it initializes it with default values.
- *
- * @returns {UserData} The user data object.
  */
 export function getOrCreateUserData(): UserData {
   const userData = localStorage.getItem(USER_DATA_KEY);
@@ -69,8 +72,7 @@ export function getOrCreateGameData(gameId: number): GameData {
     // If the game does not exist, create a new one with default values
     gameData = {
       id: gameId,
-      completed: false,
-      won: false,
+      status: GameStatus.IN_PROGRESS, // Default status
       guesses: [],
     };
     userData.playedGames.push(gameData);
@@ -113,6 +115,7 @@ export function addGuessToGame(gameId: number, guess: Guess): void {
 /**
  * Marks a game as finished (and optionally won).
  * If the game does not exist, it logs an error.
+ *
  * @param {number} gameId - The ID of the game to finish.
  * @param {boolean} won - Whether the game was won or not.
  */
@@ -123,14 +126,14 @@ export function finishGame(gameId: number, won: boolean): void {
   const game = userData.playedGames.find((g) => g.id === gameId);
 
   if (game) {
-    // If the game exists, mark it as completed and set won status
-    game.completed = true;
-    game.won = won;
+    game.status = won ? GameStatus.WON : GameStatus.LOST;
 
     // Save updated user data back to localStorage
     localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
 
-    console.log(`Game with ID ${gameId} marked as finished. Won: ${won}`);
+    console.log(
+      `Game with ID ${gameId} marked as finished. Status: ${game.status}`
+    );
   } else {
     console.error(
       `Game with ID ${gameId} not found in user data. Could not finish game.`
