@@ -8,6 +8,8 @@ import {
   OBJECT_TITLE_ACCESSOR,
   MEDIUM_ACCESSOR,
   DIMENSIONS_ACCESSOR,
+  ARTIST_NAME_ACCESSOR,
+  OBJECT_DATE_ACCESSOR,
 } from "../constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
@@ -21,9 +23,10 @@ export function GameView({ id, data }: { id: number; data: any }) {
     )
     .slice(0, 5);
 
-  const solution = data[OBJECT_TITLE_ACCESSOR];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clueCount, setClueCount] = useState(0);
+
+  const solution = data[OBJECT_TITLE_ACCESSOR];
   const revealed = clueCount > clueKeys.length;
 
   const handleSubmitGuess = (guess: string) => {
@@ -108,6 +111,16 @@ function Banner({
   data: any;
   revealed: boolean;
 }) {
+  const formatAttributes = (attributes: Array<string | undefined>) => {
+    const attributesArray: Array<string> = [];
+    attributes.forEach((attr) => {
+      if (attr) {
+        attributesArray.push(attr);
+      }
+    });
+
+    return attributesArray.join(", ");
+  };
   return (
     <div className="bg-white p-4 sticky top-20 z-40 border-b border-primary">
       {revealed ? (
@@ -119,10 +132,16 @@ function Banner({
           </h1>
           {/* TODO: make sure this exists */}
           <p className="text-sm font-light">
-            {data.artistDisplayName}, {data.objectDate}
+            {formatAttributes([
+              data[ARTIST_NAME_ACCESSOR],
+              data[OBJECT_DATE_ACCESSOR],
+            ])}
           </p>
           <p className="text-sm font-light">
-            {data[MEDIUM_ACCESSOR]}, {data[DIMENSIONS_ACCESSOR]}
+            {formatAttributes([
+              data[MEDIUM_ACCESSOR],
+              data[DIMENSIONS_ACCESSOR],
+            ])}
           </p>
         </>
       ) : (
