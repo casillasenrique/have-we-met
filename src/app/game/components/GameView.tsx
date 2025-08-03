@@ -14,9 +14,11 @@ import {
 } from "../constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
+import { Spinner } from "@/app/components/Spinner";
 import {
   addGuessToGame,
   finishGame,
+  GameStatus,
   getOrCreateGameData,
   Guess,
 } from "@/api/userData";
@@ -30,40 +32,14 @@ export function GameView({ id, data }: { id: number; data: any }) {
     )
     .slice(0, 5);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [clueCount, setClueCount] = useState(0);
-
   const solution = data[OBJECT_TITLE_ACCESSOR];
-  const revealed = clueCount > clueKeys.length;
 
-  const handleSubmitGuess = (guess: string) => {
-    // Handle guess submission logic here
-    console.log("Guess submitted: ", guess);
-    addGuessToGame(id, { value: guess } as Guess);
-    if (guess.toLowerCase() === solution.toLowerCase()) {
-      console.log("Correct guess!");
-      // Handle correct guess logic here
-      // Mark the game as finished and won
-      finishGame(id, true);
-    } else {
-      console.log("Incorrect guess. Try again!");
-      // Handle incorrect guess logic here
-      setClueCount((prevCount) => prevCount + 1);
-    }
-  };
-
-  const handleSkip = () => {
-    setClueCount((prevCount) => prevCount + 1);
-
-    // Store the guess in the game data as an empty guess
-    addGuessToGame(id, { value: "" } as Guess);
-    if (clueCount >= clueKeys.length) {
-      // put logic for losing
-      console.log("No more clues available to skip. GAME OVER");
-      finishGame(id, false);
-      return;
-    }
-  };
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [guesses, setGuesses] = useState<Array<Guess>>([]);
+  const [gameStatus, setGameStatus] = useState<GameStatus>(
+    GameStatus.IN_PROGRESS
+  );
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -71,14 +47,62 @@ export function GameView({ id, data }: { id: number; data: any }) {
     console.log(
       `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
-    setClueCount(cachedData.guesses.length);
+    setGuesses(cachedData.guesses);
+    setGameStatus(cachedData.status);
+    setIsLoading(false);
   }, []);
+
+  const handleSubmitGuess = (guess: string) => {
+    // Handle guess submission logic here
+    console.log("Guess submitted: ", guess);
+    addGuessToGame(id, { value: guess } as Guess);
+    setGuesses((prevGuesses) => [...prevGuesses, { value: guess }]);
+    if (guess.toLowerCase() === solution.toLowerCase()) {
+      console.log("Correct guess!");
+      // Handle correct guess logic here
+      // Mark the game as finished and won
+      finishGame(id, true);
+      setGameStatus(GameStatus.WON);
+    } else {
+      if (guesses.length >= clueKeys.length) {
+        // If the user has used all clues, mark the game as lost
+        console.log("No more clues available. GAME OVER");
+        finishGame(id, false);
+        setGameStatus(GameStatus.LOST);
+      }
+    }
+  };
+
+  const handleSkip = () => {
+    // Store the guess in the game data as an empty guess
+    addGuessToGame(id, { value: "" } as Guess);
+    setGuesses((prevGuesses) => [...prevGuesses, { value: "" }]);
+    if (guesses.length >= clueKeys.length) {
+      // If the user has used all clues, mark the game as lost
+      console.log("No more clues available. GAME OVER");
+      finishGame(id, false);
+      setGameStatus(GameStatus.LOST);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <Spinner />
+        <p className="font-medium uppercase">loading MET object...</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <div>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-        <Banner id={id} data={data} revealed={revealed} />
+        <Banner
+          id={id}
+          data={data}
+          revealed={gameStatus !== GameStatus.IN_PROGRESS}
+        />
         <PixelatedImage src={data.primaryImage} />
         <div className="flex flex-col gap-4 p-6">
           {clueKeys.map((key, index) => (
@@ -86,10 +110,10 @@ export function GameView({ id, data }: { id: number; data: any }) {
               key={key}
               title={CLUE_ACCESSORS[key].title}
               detail={data[key]}
-              visible={clueCount > index}
+              visible={guesses.length > index}
             />
           ))}
-          {!revealed ? (
+          {gameStatus === GameStatus.IN_PROGRESS ? (
             <div className="pt-4 flex justify-end gap-2">
               <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                 Guess
