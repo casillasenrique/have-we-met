@@ -104,14 +104,24 @@ export function GameView({ id, data }: { id: number; data: any }) {
           revealed={gameStatus !== GameStatus.IN_PROGRESS}
         />
         <PixelatedImage src={data.primaryImage} />
-        <div className="flex flex-col gap-4 p-6">
+        <div className="flex flex-col gap-4 p-4">
           {clueKeys.map((key, index) => (
-            <Clue
-              key={key}
-              title={CLUE_ACCESSORS[key].title}
-              detail={data[key]}
-              visible={guesses.length > index}
-            />
+            <>
+              <Clue
+                key={key}
+                title={CLUE_ACCESSORS[key].title}
+                detail={data[key]}
+                visible={guesses.length > index}
+              />
+              {guesses.length > index && (
+                <p className="text-xs text-gray-500">
+                  Your guess: {guesses[index].value || "Skipped"}
+                </p>
+              )}
+              {index < clueKeys.length - 1 && (
+                <hr className="border-t border-gray-300" />
+              )}
+            </>
           ))}
           {gameStatus === GameStatus.IN_PROGRESS ? (
             <div className="pt-4 flex justify-end gap-2">
