@@ -1,7 +1,15 @@
-export function PixelatedImage({ src }: { src: string }) {
+export function PixelatedImage({
+  src,
+  revealed,
+}: {
+  src: string;
+  revealed: boolean;
+}) {
   return (
     <img
-      src={`/api/pixelatedImage?src=${encodeURIComponent(src)}`}
+      src={
+        revealed ? src : `/api/pixelatedImage?src=${encodeURIComponent(src)}`
+      }
       alt={`Pixelated image for ${src}}`}
     />
   );

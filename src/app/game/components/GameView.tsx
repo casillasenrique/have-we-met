@@ -99,7 +99,10 @@ export function GameView({ id, data }: { id: number; data: any }) {
       <div>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Banner id={id} data={data} gameStatus={gameStatus} />
-        <PixelatedImage src={data.primaryImage} />
+        <PixelatedImage
+          src={data.primaryImage}
+          revealed={gameStatus != GameStatus.IN_PROGRESS}
+        />
         <div className="flex flex-col gap-4 p-4">
           {clueKeys.map((key, index) => (
             <>
