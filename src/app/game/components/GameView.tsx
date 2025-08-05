@@ -49,7 +49,9 @@ export function GameView({ id, data }: { id: number; data: any }) {
     );
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 200); // Simulate loading delay to avoid jarring loading experience
   }, []);
 
   const handleSubmitGuess = (guess: string) => {
@@ -85,18 +87,15 @@ export function GameView({ id, data }: { id: number; data: any }) {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col justify-center items-center">
-        <Spinner />
-        <p className="font-medium uppercase">loading MET object...</p>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <div>
+    <div>
+      {isLoading && (
+        <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
+          <Spinner />
+          <p className="font-medium uppercase">loading MET object...</p>
+        </div>
+      )}
+      <div className={isLoading ? "hidden" : ""}>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Banner id={id} data={data} gameStatus={gameStatus} />
         <PixelatedImage
@@ -157,7 +156,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitGuess}
       />
-    </>
+    </div>
   );
 }
 

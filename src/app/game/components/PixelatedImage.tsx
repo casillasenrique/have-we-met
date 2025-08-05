@@ -10,7 +10,7 @@ export function PixelatedImage({
       src={
         revealed ? src : `/api/pixelatedImage?src=${encodeURIComponent(src)}`
       }
-      alt={`Pixelated image for ${src}}`}
+      alt={`Pixelated image for ${src}`}
     />
   );
 }
