@@ -20,7 +20,7 @@ export default function ArchiveView({ weeks }: { weeks: ArchiveDay[][] }) {
   const getGameCircleStyle = useCallback(
     (gameId: number) => {
       if (!userData) {
-        console.warn("User data is not available yet");
+        // console.warn("User data is not available yet");
         return DEFAULT_DAY_CIRCLE_STYLE; // Default style if userData is not available
       }
       const game = userData.playedGames.find((g) => g.id === gameId);

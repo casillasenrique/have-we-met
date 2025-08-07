@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export function Nav() {
+export function Nav({ todaysGameId }: { todaysGameId: number }) {
   const pathname = usePathname();
 
   return (
@@ -13,9 +13,9 @@ export function Nav() {
       <ul className="flex items-center list-none m-0 ml-8 p-0 gap-6">
         <li>
           <Link
-            href="/game/436530"
+            href={`/game/${todaysGameId}`}
             className={
-              pathname === "/game/436530"
+              pathname === `/game/${todaysGameId}`
                 ? `underline underline-offset-8`
                 : "hover:underline hover:underline-offset-8"
             }

@@ -1,5 +1,6 @@
 import React from "react";
 import ArchiveView from "./ArchiveView";
+import { getObjectIdsToToday } from "@/api/objectData";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_WEEK_STRINGS = ["s", "m", "t", "w", "th", "f", "s"];
@@ -11,8 +12,12 @@ export interface ArchiveDay {
 }
 
 export default function Archive() {
+  const allObjectIds = getObjectIdsToToday(); // Server-side retrieval
+  const totalGames = allObjectIds.length;
+  console.log(`Retrieved ${totalGames} games/object IDs`);
+
+  // todo: can probably get the dates in getObjectIdsToToday
   const today = new Date();
-  const totalGames = 100; // TODO: Replace with the actual number of games in the archive
   const archiveDays = Array.from({ length: totalGames }, (_, index) => {
     const date = new Date();
     date.setDate(today.getDate() - index);

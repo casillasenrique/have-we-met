@@ -1,22 +1,21 @@
-"use client";
 import React from "react";
 import "./globals.css";
-import { usePathname } from "next/navigation";
-import { Nav } from "./components/Nav";
+import ClientLayout from "./components/ClientLayout";
+import { getTodaysGameId } from "@/api/objectData";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
+  const todaysGameId = getTodaysGameId();
+  console.log("Today's game ID is:", todaysGameId);
 
   return (
     <html lang="en">
       <body className="bg-white">
         <div className="max-w-[1024px] min-h-screen mx-auto bg-white border border-primary box-border">
-          {pathname !== "/" && <Nav />}
-          <main>{children}</main>
+          <ClientLayout todaysGameId={todaysGameId}>{children}</ClientLayout>
         </div>
       </body>
     </html>
