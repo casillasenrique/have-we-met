@@ -35,6 +35,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
   const solution = data[OBJECT_TITLE_ACCESSOR];
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [guesses, setGuesses] = useState<Array<Guess>>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>(
@@ -89,22 +90,24 @@ export function GameView({ id, data }: { id: number; data: any }) {
 
   return (
     <div>
-      {isLoading && (
-        <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
-          <Spinner />
-          <p className="font-medium uppercase">loading MET object...</p>
-        </div>
-      )}
-      <div className={isLoading ? "hidden" : ""}>
+      {isLoading ||
+        (isImageLoading && (
+          <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
+            <Spinner />
+            <p className="font-medium uppercase">loading MET object...</p>
+          </div>
+        ))}
+      <div className={isLoading || isImageLoading ? "hidden" : ""}>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Banner id={id} data={data} gameStatus={gameStatus} />
         <PixelatedImage
           src={data.primaryImage}
           revealed={gameStatus != GameStatus.IN_PROGRESS}
+          handleImageLoad={() => setIsImageLoading(false)}
         />
         <div className="flex flex-col gap-4 p-4">
           {clueKeys.map((key, index) => (
-            <>
+            <div key={key} className="flex flex-col gap-4">
               <Clue
                 key={key}
                 title={CLUE_ACCESSORS[key].title}
@@ -122,9 +125,9 @@ export function GameView({ id, data }: { id: number; data: any }) {
               {index < clueKeys.length - 1 && (
                 <hr className="border-t border-gray-300" />
               )}
-            </>
+            </div>
           ))}
-          {gameStatus === GameStatus.IN_PROGRESS ? (
+          {gameStatus === GameStatus.IN_PROGRESS && (
             <div className="pt-4 flex justify-end gap-2">
               <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                 Guess
@@ -133,22 +136,23 @@ export function GameView({ id, data }: { id: number; data: any }) {
                 Skip
               </Button>
             </div>
-          ) : (
-            <div className="w-full pt-4 flex justify-between">
-              <Link
-                href={`/game/${id - 1}`}
-                className="text-primary underline underline-offset-8"
-              >
-                {/* TODO: need to verify there is a prev */}#{id - 1}
-              </Link>
-              <Link
-                href={`/game/${id + 1}`}
-                className="text-primary underline underline-offset-8"
-              >
-                {/* TODO: need to verify there is a next */}#{id + 1}
-              </Link>
-            </div>
           )}
+          <div className="w-full pt-4 flex justify-between">
+            <Link
+              href={`/game/${id - 1}`}
+              className="text-primary flex items-center"
+            >
+              <span className="material-icons text-primary">arrow_left</span>
+              {/* TODO: need to verify there is a prev */}#{id - 1}
+            </Link>
+            <Link
+              href={`/game/${id + 1}`}
+              className="text-primary flex items-center"
+            >
+              {/* TODO: need to verify there is a next */}#{id + 1}
+              <span className="material-icons text-primary">arrow_right</span>
+            </Link>
+          </div>
         </div>
       </div>
       <SubmissionModal
