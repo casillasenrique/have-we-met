@@ -22,6 +22,7 @@ import {
   getOrCreateGameData,
   Guess,
 } from "@/api/userData";
+import { ImageNotFound } from "./ImageNotFound";
 
 export function GameView({ id, data }: { id: number; data: any }) {
   const clueKeys = (
@@ -36,6 +37,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
+  const [isImageError, setisImageError] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [guesses, setGuesses] = useState<Array<Guess>>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>(
@@ -50,9 +52,7 @@ export function GameView({ id, data }: { id: number; data: any }) {
     );
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 200); // Simulate loading delay to avoid jarring loading experience
+    setIsLoading(false);
   }, []);
 
   const handleSubmitGuess = (guess: string) => {
@@ -89,55 +89,66 @@ export function GameView({ id, data }: { id: number; data: any }) {
   };
 
   return (
-    <div>
-      {isLoading ||
-        (isImageLoading && (
-          <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
-            <Spinner />
-            <p className="font-medium uppercase">loading MET object...</p>
-          </div>
-        ))}
+    <div className="h-full">
+      {(isLoading || isImageLoading) && (
+        <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
+          <Spinner />
+          <p className="font-medium uppercase">loading MET object...</p>
+        </div>
+      )}
       <div className={isLoading || isImageLoading ? "hidden" : ""}>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Banner id={id} data={data} gameStatus={gameStatus} />
-        <PixelatedImage
-          src={data.primaryImage}
-          revealed={gameStatus != GameStatus.IN_PROGRESS}
-          handleImageLoad={() => setIsImageLoading(false)}
-        />
-        <div className="flex flex-col gap-4 p-4">
-          {clueKeys.map((key, index) => (
-            <div key={key} className="flex flex-col gap-4">
-              <Clue
-                key={key}
-                title={CLUE_ACCESSORS[key].title}
-                detail={data[key]}
-                visible={
-                  guesses.length > index ||
-                  gameStatus !== GameStatus.IN_PROGRESS
-                }
-              />
-              {guesses.length > index && (
-                <p className="text-xs text-gray-500">
-                  Your guess: {guesses[index].value || "Skipped"}
-                </p>
-              )}
-              {index < clueKeys.length - 1 && (
-                <hr className="border-t border-gray-300" />
-              )}
-            </div>
-          ))}
-          {gameStatus === GameStatus.IN_PROGRESS && (
-            <div className="pt-4 flex justify-end gap-2">
-              <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-                Guess
-              </Button>
-              <Button variant="secondary" onClick={handleSkip}>
-                Skip
-              </Button>
-            </div>
-          )}
-          <div className="w-full pt-4 flex justify-between">
+        {isImageError ? (
+          <ImageNotFound />
+        ) : (
+          <PixelatedImage
+            src={data.primaryImage}
+            revealed={gameStatus != GameStatus.IN_PROGRESS}
+            handleImageLoad={() => {
+              setIsImageLoading(false);
+            }}
+            handleImageError={() => {
+              setIsImageLoading(false);
+              setisImageError(true);
+            }}
+          />
+        )}
+        <div className="flex flex-col justify-between p-4">
+          <div className="flex flex-col gap-4">
+            {clueKeys.map((key, index) => (
+              <div key={key} className="flex flex-col gap-4">
+                <Clue
+                  key={key}
+                  title={CLUE_ACCESSORS[key].title}
+                  detail={data[key]}
+                  visible={
+                    guesses.length > index ||
+                    gameStatus !== GameStatus.IN_PROGRESS
+                  }
+                />
+                {guesses.length > index && (
+                  <p className="text-xs text-gray-500">
+                    Your guess: {guesses[index].value || "Skipped"}
+                  </p>
+                )}
+                {index < clueKeys.length - 1 && (
+                  <hr className="border-t border-gray-300" />
+                )}
+              </div>
+            ))}
+            {gameStatus === GameStatus.IN_PROGRESS && (
+              <div className="pt-4 flex justify-end gap-2">
+                <Button variant="primary" onClick={() => setIsModalOpen(true)}>
+                  Guess
+                </Button>
+                <Button variant="secondary" onClick={handleSkip}>
+                  Skip
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="w-full pt-8 flex justify-between">
             <Link
               href={`/game/${id - 1}`}
               className="text-primary flex items-center"

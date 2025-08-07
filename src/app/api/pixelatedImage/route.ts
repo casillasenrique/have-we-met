@@ -49,7 +49,7 @@ export async function GET(req: Request) {
     return new NextResponse(pixelated, {
       headers: {
         "Content-Type": "image/jpeg",
-        "Cache-Control": "public, max-age=86400", // Cache for 1 day
+        "Cache-Control": "public, max-age=0", // Cache for 1 day
       },
     });
   } catch (error) {

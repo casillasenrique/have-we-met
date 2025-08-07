@@ -5,10 +5,12 @@ export function PixelatedImage({
   src,
   revealed,
   handleImageLoad,
+  handleImageError,
 }: {
   src: string;
   revealed: boolean;
   handleImageLoad: VoidFunction;
+  handleImageError: VoidFunction;
 }) {
   return (
     <img
@@ -16,11 +18,8 @@ export function PixelatedImage({
         revealed ? src : `/api/pixelatedImage?src=${encodeURIComponent(src)}`
       }
       alt={`Pixelated image for ${src}`}
-      onLoad={handleImageLoad} // Triggered when the image is fully loaded
-      // style={{
-      //   display: loading ? "none" : "block", // Hide the image while it's loading
-      //   width: "100%", // Ensure it fits the container
-      // }}
+      onLoad={handleImageLoad}
+      onError={handleImageError}
     />
   );
 }
