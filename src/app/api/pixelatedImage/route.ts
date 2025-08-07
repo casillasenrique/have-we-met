@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     const buffer = Buffer.from(imageBuffer);
 
     // Resize down and back up to pixelate
-    const pixelSize = 50; // Larger value = more pixelation
+    const pixelSize = 100; // Larger value = more pixelation
     const metadata = await sharp(buffer).metadata();
 
     const width = metadata.width || 500;
@@ -36,7 +36,9 @@ export async function GET(req: Request) {
     );
 
     const downscaled = await sharp(buffer)
+      .blur(1) // Add blur to smooth out the pixelation
       .resize(smallWidth, smallHeight, { kernel: "nearest" })
+      .png({ palette: true }) // enable indexed color (palette-based) for cleaner pixelation
       .toBuffer();
 
     const pixelated = await sharp(downscaled)
