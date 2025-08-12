@@ -3,7 +3,11 @@ import { GameView } from "../components/GameView";
 import { fetchObjectData, getObjectId } from "@/api/objectData";
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for this route
 
-export default async function Game({ params }: { params: { id: string } }) {
+export default async function Game({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const gameId = parseInt(id, 10);
 
