@@ -23,8 +23,9 @@ import {
   Guess,
 } from "@/api/userData";
 import { ImageNotFound } from "./ImageNotFound";
+import { ObjectData } from "@/api/objectData";
 
-export function GameView({ id, data }: { id: number; data: any }) {
+export function GameView({ id, data }: { id: number; data: ObjectData }) {
   const clueKeys = (
     Object.keys(CLUE_ACCESSORS) as (keyof typeof CLUE_ACCESSORS)[]
   )
@@ -181,7 +182,7 @@ function Banner({
   gameStatus,
 }: {
   id: number;
-  data: any;
+  data: ObjectData;
   gameStatus: GameStatus;
 }) {
   const formatAttributes = (attributes: Array<string | undefined>) => {

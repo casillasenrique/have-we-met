@@ -10,16 +10,18 @@ const OBJECT_IDS_PATH = path.join(
   "objectIds.txt"
 );
 
+export type ObjectData = { [key: string]: string };
+
 /**
  * The global cache object to store object data.
  *
  * Maps game IDs to their corresponding object data.
  */
 type ObjectCache = {
-  [gameId: number]: { data: any; timestamp: number };
+  [gameId: number]: { data: ObjectData; timestamp: number };
 };
 
-let objectCache: ObjectCache = {};
+const objectCache: ObjectCache = {};
 
 /**
  * Cache the object IDs to avoid reading the file multiple times.
