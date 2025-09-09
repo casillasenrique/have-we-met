@@ -8,7 +8,7 @@ export function Nav({ todaysGameId }: { todaysGameId: number }) {
   return (
     <nav className="sticky top-0 z-50 flex items-center p-4 bg-primary text-white justify-between">
       <div className="text-lg w-[100px] leading-snug">
-        <p>have we MET?</p>
+        <Link href={"/"}>have we MET?</Link>
       </div>
       <ul className="flex items-center list-none m-0 ml-8 p-0 gap-6">
         <li>
