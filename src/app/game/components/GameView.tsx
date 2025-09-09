@@ -77,6 +77,13 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [gameStatus]);
+
   const handleSkip = () => {
     // Store the guess in the game data as an empty guess
     addGuessToGame(id, { value: "" } as Guess);
