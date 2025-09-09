@@ -13,8 +13,8 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className="bg-white">
-        <div className="max-w-[1024px] min-h-screen mx-auto bg-white border border-primary box-border">
+      <body className="bg-white ">
+        <div className="max-w-[1024px] min-h-screen mx-auto bg-white outline outline-primary">
           <ClientLayout todaysGameId={todaysGameId}>{children}</ClientLayout>
         </div>
       </body>
