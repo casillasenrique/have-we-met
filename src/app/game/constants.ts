@@ -6,7 +6,7 @@ export const OBJECT_DATE_ACCESSOR = "objectDate";
 export const OBJECT_URL_ACCESSOR = "objectURL";
 
 export const CLUE_ACCESSORS = {
-  Department: { title: "Department" },
+  department: { title: "Department" },
   GalleryNumber: { title: "Gallery Number" },
   [OBJECT_DATE_ACCESSOR]: { title: "Object Date" },
   artistNationality: { title: "Artist Nationality" },
