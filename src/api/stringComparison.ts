@@ -1,4 +1,4 @@
-const { distance } = require("fastest-levenshtein");
+import { distance } from "fastest-levenshtein";
 
 // List of common stop words to remove
 const STOP_WORDS = new Set([
