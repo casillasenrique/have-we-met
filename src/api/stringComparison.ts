@@ -58,12 +58,17 @@ export function guessIsCloseEnough(
   const normalizedGuess = normalizeTitle(guess);
   const dist = distance(normalizedTitle, normalizedGuess);
 
-  console.log("Normalized titles:", { normalizedTitle, normalizedGuess, dist });
-
   // Factor in the length of the strings to determine an acceptable threshold
   // For example, longer strings can tolerate more differences
   const length = Math.max(normalizedTitle.length, normalizedGuess.length);
   const threshold = Math.ceil(length * 0.4);
-  console.log(objectTitle, ", guess:", guess, dist, threshold);
+
+  console.log("Normalized titles:", {
+    normalizedTitle,
+    normalizedGuess,
+    dist,
+    threshold,
+  });
+
   return dist <= threshold;
 }
