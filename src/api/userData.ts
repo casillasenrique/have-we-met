@@ -17,6 +17,7 @@ export interface GameData {
   id: number; // Game ID
   status: GameStatus; // Game status (IN_PROGRESS, WON, LOST)
   guesses: Guess[]; // Array of Guess objects
+  completionTime?: string; // Optional completion time as ISO string
 }
 
 export interface UserData {
@@ -128,6 +129,7 @@ export function finishGame(gameId: number, won: boolean): void {
 
   if (game) {
     game.status = won ? GameStatus.WON : GameStatus.LOST;
+    game.completionTime = new Date().toISOString();
 
     // Save updated user data back to localStorage
     localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
