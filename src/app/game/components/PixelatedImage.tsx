@@ -1,6 +1,3 @@
-import { Spinner } from "@/app/components/Spinner";
-import { useState } from "react";
-
 export function PixelatedImage({
   src,
   revealed,

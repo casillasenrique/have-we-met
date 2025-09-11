@@ -24,6 +24,7 @@ import {
 } from "@/api/userData";
 import { ImageNotFound } from "./ImageNotFound";
 import { ObjectData } from "@/api/objectData";
+import { FullPageSpinner } from "@/app/components/FullPageSpinner";
 
 export function GameView({ id, data }: { id: number; data: ObjectData }) {
   const clueKeys = (
@@ -98,12 +99,7 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
 
   return (
     <div className="h-full">
-      {(isLoading || isImageLoading) && (
-        <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
-          <Spinner />
-          <p className="font-medium uppercase">loading MET object...</p>
-        </div>
-      )}
+      {(isLoading || isImageLoading) && <FullPageSpinner />}
       <div className={isLoading || isImageLoading ? "hidden" : ""}>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         <Banner id={id} data={data} gameStatus={gameStatus} />
