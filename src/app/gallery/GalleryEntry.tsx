@@ -17,6 +17,7 @@ function GalleryEntry({
   objectData: ObjectDataResponse;
   gameData: GameData;
 }) {
+  console.log("gameData ", gameData);
   const data = objectData.value;
   const numberGuesses = gameData.guesses.length;
 
@@ -54,7 +55,7 @@ function GalleryEntry({
         </div>
         <div className="flex flex-row">
           <p className="text-xs text-gray-500">
-            Met on 09/10/2025,{" "}
+            Met on {gameData.completionTime},{" "}
             <Link
               href={`/game/${gameData.id}`}
               className="text-xs text-gray-500 underline"
