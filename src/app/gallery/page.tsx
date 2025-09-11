@@ -21,7 +21,7 @@ export default function Gallery() {
         const _wonGames = data.playedGames.filter(
           (g) => g.status === GameStatus.WON
         );
-        const wonGamesIds = [251, 252, 253]; // wonGames.map((g) => g.id);
+        const wonGamesIds = wonGames.map((g) => g.id);
 
         console.log("wonGameIds ", wonGamesIds);
 
