@@ -15,10 +15,10 @@ export type ObjectData = { [key: string]: string };
 /**
  * The global cache object to store object data.
  *
- * Maps game IDs to their corresponding object data.
+ * Maps object IDs to their corresponding object data.
  */
 type ObjectCache = {
-  [gameId: number]: { data: ObjectData; timestamp: number };
+  [objectId: number]: { data: ObjectData; timestamp: number };
 };
 
 const objectCache: ObjectCache = {};
@@ -120,35 +120,36 @@ export function getTodaysGameId(): number {
 
 /**
  *
- * @param id - The ID of the game.
- * Fetches the object data for the given game ID.
+ * Fetches the object data for the given MET object ID.
+ *
+ * @param objectId - The ID of the object. Use getObjectId(gameId) to get this.
  * @returns the object data for the game.
  */
-export async function fetchObjectData(gameId: number) {
+export async function fetchObjectData(objectId: number) {
   // todo: add a TTL
   const now = Date.now();
 
   // Check if the data is in the cache and still valid
-  if (objectCache[gameId]) {
-    console.log(`Cache hit for ID ${gameId}`);
-    return objectCache[gameId].data;
+  if (objectCache[objectId]) {
+    console.log(`Cache hit for ID ${objectId}`);
+    return objectCache[objectId].data;
   }
 
   // Otherwise get the next game object ID
 
   // Fetch data from the external API
-  console.log(`Cache miss for ID ${gameId}, retrieving from API`);
+  console.log(`Cache miss for ID ${objectId}, retrieving from API`);
   const response = await fetch(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${gameId}`
+    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
   );
   if (!response.ok) {
-    throw new Error(`Failed to fetch data for ID ${gameId}`);
+    throw new Error(`Failed to fetch data for ID ${objectId}`);
   }
 
   const data = await response.json();
 
   // Cache the response
-  objectCache[gameId] = { data, timestamp: now };
+  objectCache[objectId] = { data, timestamp: now };
 
   return data;
 }
