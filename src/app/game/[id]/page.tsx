@@ -1,6 +1,7 @@
 import React from "react";
 import { GameView } from "../components/GameView";
 import { fetchObjectData, getObjectId } from "@/api/objectData";
+import { GALLERY_NUMBER_ACCESSOR } from "../constants";
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for this route
 
 export default async function Game({
@@ -25,6 +26,9 @@ export default async function Game({
 
   try {
     const data = await fetchObjectData(objectId);
+    if (!data[GALLERY_NUMBER_ACCESSOR]) {
+      throw new Error("Object is no longer on view!");
+    }
     return <GameView id={gameId} data={data} />;
   } catch (error) {
     return (
