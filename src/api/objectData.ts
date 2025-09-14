@@ -10,7 +10,7 @@ const OBJECT_IDS_PATH = path.join(
   "objectIds.txt"
 );
 
-let allObjectIds: number[] | null = null;
+const allObjectIds: number[] | null = null;
 
 export type ObjectData = { [key: string]: string };
 
@@ -44,8 +44,8 @@ function loadObjectIds() {
     return allObjectIds;
   }
 
-  let raw = fs.readFileSync(OBJECT_IDS_PATH, "utf-8");
-  return raw
+  return fs
+    .readFileSync(OBJECT_IDS_PATH, "utf-8")
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean)
