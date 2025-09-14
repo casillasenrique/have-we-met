@@ -11,7 +11,7 @@ import {
   ARTIST_NAME_ACCESSOR,
   OBJECT_DATE_ACCESSOR,
   OBJECT_URL_ACCESSOR,
-} from "../constants";
+} from "@/utils/constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
 import { Spinner } from "@/app/components/Spinner";
@@ -25,6 +25,8 @@ import {
 import { ImageNotFound } from "./ImageNotFound";
 import { ObjectData } from "@/api/objectData";
 import { FullPageSpinner } from "@/app/components/FullPageSpinner";
+import { ShareModal } from "./ShareModal";
+import { getEmojiString } from "@/utils/functions";
 
 export function GameView({ id, data }: { id: number; data: ObjectData }) {
   const clueKeys = (
@@ -45,6 +47,7 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
   const [gameStatus, setGameStatus] = useState<GameStatus>(
     GameStatus.IN_PROGRESS
   );
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -102,7 +105,12 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
       {(isLoading || isImageLoading) && <FullPageSpinner />}
       <div className={isLoading || isImageLoading ? "hidden" : ""}>
         {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
-        <Banner id={id} data={data} gameStatus={gameStatus} />
+        <Banner
+          id={id}
+          data={data}
+          gameStatus={gameStatus}
+          onShare={() => setIsShareModalOpen(true)}
+        />
         {isImageError ? (
           <ImageNotFound />
         ) : (
@@ -175,6 +183,15 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmitGuess}
       />
+      <ShareModal
+        isOpen={isShareModalOpen}
+        gameId={id}
+        score={`${gameStatus === GameStatus.WON ? guesses.length : "X"}/${
+          clueKeys.length
+        }`}
+        emojiString={getEmojiString(guesses, clueKeys.length, gameStatus)}
+        onClose={() => setIsShareModalOpen(false)}
+      />
     </div>
   );
 }
@@ -183,10 +200,12 @@ function Banner({
   id,
   data,
   gameStatus,
+  onShare,
 }: {
   id: number;
   data: ObjectData;
   gameStatus: GameStatus;
+  onShare: () => void;
 }) {
   const formatAttributes = (attributes: Array<string | undefined>) => {
     const attributesArray: Array<string> = [];
@@ -209,6 +228,9 @@ function Banner({
             ) : (
               <span className="material-icons text-red-500">close</span>
             )}
+            <button onClick={onShare} className="text-sm flex">
+              <span className="material-icons text-primary">share</span>
+            </button>
           </div>
           <h1 className="text-2xl font-bold">
             {data[OBJECT_TITLE_ACCESSOR]}{" "}
