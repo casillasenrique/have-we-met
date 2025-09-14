@@ -10,6 +10,8 @@ const OBJECT_IDS_PATH = path.join(
   "objectIds.txt"
 );
 
+let allObjectIds: number[] | null = null;
+
 export type ObjectData = { [key: string]: string };
 
 /**
@@ -37,6 +39,19 @@ let cachedIds: number[] | null = null;
  */
 let cachedDate: Date | null = null;
 
+function loadObjectIds() {
+  if (allObjectIds) {
+    return allObjectIds;
+  }
+
+  let raw = fs.readFileSync(OBJECT_IDS_PATH, "utf-8");
+  return raw
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map(Number);
+}
+
 function getEasternDateNow() {
   const timeZone = "America/New_York";
   const now = new Date();
@@ -50,8 +65,15 @@ function getDayIndexFromStart(start: Date, today: Date) {
 
 export function getObjectIdsToToday(): number[] {
   const today = getEasternDateNow();
+  console.log(
+    "Today's date (ET):",
+    today.toDateString(),
+    "| Cached date:",
+    cachedDate?.toDateString()
+  );
   // If the cached date is different from today, reset the cache
   if (!cachedDate || today.toDateString() !== cachedDate.toDateString()) {
+    console.log("Date has changed, resetting cached IDs");
     cachedIds = null;
   }
 
@@ -61,19 +83,7 @@ export function getObjectIdsToToday(): number[] {
   }
 
   // Otherwise read the file and populate cachedIds
-  console.log(
-    "Cache is not populated, reading object IDs from file. Cached date:",
-    cachedDate?.toDateString(),
-    "Today:",
-    today.toDateString()
-  );
-  const raw = fs.readFileSync(OBJECT_IDS_PATH, "utf-8");
-  const objectIds = raw
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .map(Number);
-
+  const objectIds = loadObjectIds();
   if (objectIds.length === 0) {
     throw new Error("No object IDs found in the file");
   }
@@ -84,6 +94,7 @@ export function getObjectIdsToToday(): number[] {
       `Today's index ${index} is out of bounds for the object IDs array`
     );
   }
+
   // Return only the object IDs up to today
   cachedIds = objectIds.slice(0, index + 1);
   cachedDate = today;
