@@ -1,9 +1,11 @@
-import { GameStatus, Guess } from "@/api/userData";
+import { GameStatus, Guess } from "../api/userData";
 
 /**
  * Gets the emoji string representing the player's guesses in a wordle-style format.
  *
- * Example output (for a game with 6 clues, won in 5 guesses, with 2 skips):
+ * Note that for N clues, a user can make N+1 guesses (the final guess after all clues).
+ *
+ * Example output (for a game with 5 clues, won in 5 guesses, with 2 skips):
  * ⬜⬜🟥🟥🟩⬜
  *
  * @param guesses The guesses made by the player.
@@ -27,7 +29,7 @@ export function getEmojiString(
     // Wrong guess
     return "🟥";
   });
-  for (let i = guesses.length; i < numClues; i++) {
+  for (let i = guesses.length; i < numClues + 1; i++) {
     // Fill in with empty squares
     emojiString.push("⬜");
   }

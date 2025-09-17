@@ -197,7 +197,7 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
         isOpen={isShareModalOpen}
         gameId={id}
         score={`${gameStatus === GameStatus.WON ? guesses.length : "X"}/${
-          clueKeys.length
+          clueKeys.length + 1 // +1 to account for the final guess
         }`}
         emojiString={getEmojiString(guesses, clueKeys.length, gameStatus)}
         onClose={() => setIsShareModalOpen(false)}
