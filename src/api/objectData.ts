@@ -52,7 +52,7 @@ function loadObjectIds() {
     .map(Number);
 }
 
-function getEasternDateNow() {
+export function getEasternDateNow() {
   const timeZone = "America/New_York";
   const now = new Date();
   return toZonedTime(now, timeZone);
@@ -66,7 +66,7 @@ function getDayIndexFromStart(start: Date, today: Date) {
 export function getObjectIdsToToday(): number[] {
   const today = getEasternDateNow();
   console.log(
-    "Today's date (ET):",
+    "server: Today's date (ET):",
     today.toDateString(),
     "| Cached date:",
     cachedDate?.toDateString()
