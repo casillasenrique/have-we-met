@@ -24,6 +24,7 @@ import {
 } from "@/api/userData";
 import { ImageNotFound } from "./ImageNotFound";
 import { ObjectData } from "@/api/objectData";
+import { guessIsCloseEnough } from "@/api/stringComparison";
 import { FullPageSpinner } from "@/app/components/FullPageSpinner";
 import { ShareModal } from "./ShareModal";
 import { getEmojiString } from "@/utils/functions";
@@ -55,6 +56,7 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
     console.log(
       `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
+
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
     setIsLoading(false);
@@ -63,14 +65,22 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
   const handleSubmitGuess = (guess: string) => {
     // Handle guess submission logic here
     console.log("Guess submitted: ", guess);
+
+    // todo: MAKE SURE THIS LOG IS REMOVED
+    console.log("Solution for debugging: ", solution);
+
     addGuessToGame(id, { value: guess } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: guess }]);
+    // todo(enrique): normalize the special characters in the direct comparison
     if (guess.toLowerCase() === solution.toLowerCase()) {
       console.log("Correct guess!");
       // Handle correct guess logic here
       // Mark the game as finished and won
       finishGame(id, true);
       setGameStatus(GameStatus.WON);
+    } else if (guessIsCloseEnough(solution, guess)) {
+      console.log("CLOSE! Did you mean: ", solution);
+      // todo(kelly): show a "close" message or some indication to the user
     } else {
       if (guesses.length >= clueKeys.length) {
         // If the user has used all clues, mark the game as lost
