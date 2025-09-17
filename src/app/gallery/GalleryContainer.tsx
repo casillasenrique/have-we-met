@@ -1,0 +1,26 @@
+import React from "react";
+import { GameData } from "@/api/userData";
+import { ObjectDataResponse } from "../api/objectData/route";
+import { GalleryEntry } from "./GalleryEntry";
+
+interface GalleryContainerProps {
+  wonObjects: ObjectDataResponse[];
+  wonGames: GameData[];
+}
+
+function GalleryContainer({ wonObjects, wonGames }: GalleryContainerProps) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {wonObjects.map((o, idx) => {
+        if (o.status === "rejected") return;
+        return (
+          <div key={idx}>
+            <GalleryEntry objectData={o} gameData={wonGames[idx]} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export { GalleryContainer };

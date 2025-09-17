@@ -129,7 +129,11 @@ export function finishGame(gameId: number, won: boolean): void {
 
   if (game) {
     game.status = won ? GameStatus.WON : GameStatus.LOST;
-    game.completionTime = new Date().toISOString();
+    game.completionTime = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
 
     // Save updated user data back to localStorage
     localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));

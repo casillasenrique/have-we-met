@@ -1,6 +1,6 @@
 import React from "react";
 import ArchiveView from "./ArchiveView";
-import { getObjectIdsToToday } from "@/api/objectData";
+import { getEasternDateNow, getObjectIdsToToday } from "@/api/objectData";
 
 const DAYS_IN_WEEK = 7;
 const DAYS_IN_WEEK_STRINGS = ["s", "m", "t", "w", "th", "f", "s"];
@@ -17,7 +17,8 @@ export default function Archive() {
   console.log(`Retrieved ${totalGames} games/object IDs`);
 
   // todo: can probably get the dates in getObjectIdsToToday
-  const today = new Date();
+  const today = getEasternDateNow();
+  console.log("page: Today's date (ET):", today.toDateString());
   const archiveDays = Array.from({ length: totalGames }, (_, index) => {
     const date = new Date();
     date.setDate(today.getDate() - index);
