@@ -25,7 +25,7 @@ export function SubmissionModal({
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative max-w-[400px] bg-white p-6 shadow-lg flex flex-col">
+      <div className="relative w-[400px] bg-white p-6 shadow-lg flex flex-col">
         <h2 className="pb-2 font-medium text-primary">Who am I?</h2>
         <input
           type="text"
