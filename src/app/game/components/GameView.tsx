@@ -125,8 +125,6 @@ export function GameView({
     }
   };
 
-  console.log("guesses ", guesses);
-
   return (
     <div className="h-full">
       {(isLoading || isImageLoading) && <FullPageSpinner />}
