@@ -23,10 +23,7 @@ export function ShareModal({
     navigator.clipboard
       .writeText(shareText)
       .then(() => {
-        toast.success("Copied to clipboard!", {
-          autoClose: 1000,
-          hideProgressBar: true,
-        });
+        toast.success("Copied to clipboard!");
       })
       .catch((err) => {
         toast.error("Failed to copy to clipboard");

@@ -17,7 +17,7 @@ export default function RootLayout({
     <>
       {pathname !== "/" && <Nav todaysGameId={todaysGameId} />}
       <main>{children}</main>
-      <ToastContainer />
+      <ToastContainer autoClose={1000} hideProgressBar />
     </>
   );
 }
