@@ -14,3 +14,5 @@ export const CLUE_ACCESSORS = {
   artistDisplayBio: { title: "Artist Bio" },
   [ARTIST_NAME_ACCESSOR]: { title: "Artist Name" },
 };
+
+export const GAME_URL = "https://havewemet.nyc";
