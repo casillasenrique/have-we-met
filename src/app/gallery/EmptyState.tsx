@@ -7,7 +7,7 @@ export function EmptyState() {
       <p className="text-xl text-center">You haven't won any games yet! </p>
       {/* TODO: add link to today's game */}
       <Link className="text-lg underline underline-offset-4" href="/game">
-        Try playing today's game.
+        {"Try playing today's game."}
       </Link>
     </div>
   );
