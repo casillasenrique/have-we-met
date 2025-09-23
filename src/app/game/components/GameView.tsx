@@ -27,6 +27,7 @@ import { guessIsCloseEnough } from "@/api/stringComparison";
 import { FullPageSpinner } from "@/app/components/FullPageSpinner";
 import { ShareModal } from "./ShareModal";
 import { getEmojiString } from "@/utils/functions";
+import { CloseEnoughModal } from "./CloseEnoughModal";
 
 export function GameView({
   id,
@@ -56,6 +57,8 @@ export function GameView({
     GameStatus.IN_PROGRESS
   );
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [isCloseEnoughModalOpen, setIsCloseEnoughModalOpen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -63,6 +66,8 @@ export function GameView({
     console.log(
       `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
+
+    console.log("cached guesses ", cachedData.guesses);
 
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
@@ -87,7 +92,7 @@ export function GameView({
       setGameStatus(GameStatus.WON);
     } else if (guessIsCloseEnough(solution, guess)) {
       console.log("CLOSE! Did you mean: ", solution);
-      // todo(kelly): show a "close" message or some indication to the user
+      setIsCloseEnoughModalOpen(true);
     } else {
       if (guesses.length >= clueKeys.length) {
         // If the user has used all clues, mark the game as lost
@@ -99,13 +104,16 @@ export function GameView({
   };
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   }, [gameStatus]);
 
   const handleSkip = () => {
+    setGameStatus(GameStatus.IN_PROGRESS);
     // Store the guess in the game data as an empty guess
     addGuessToGame(id, { value: "" } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: "" }]);
@@ -116,6 +124,8 @@ export function GameView({
       setGameStatus(GameStatus.LOST);
     }
   };
+
+  console.log("guesses ", guesses);
 
   return (
     <div className="h-full">
@@ -222,6 +232,25 @@ export function GameView({
         }`}
         emojiString={getEmojiString(guesses, clueKeys.length, gameStatus)}
         onClose={() => setIsShareModalOpen(false)}
+      />
+      <CloseEnoughModal
+        isOpen={isCloseEnoughModalOpen}
+        onClose={() => setIsCloseEnoughModalOpen(false)}
+        onConfirm={() => {
+          setIsCloseEnoughModalOpen(false);
+          finishGame(id, true);
+          setGameStatus(GameStatus.WON);
+        }}
+        onDeny={() => {
+          setIsCloseEnoughModalOpen(false);
+          if (guesses.length >= clueKeys.length) {
+            console.log("No more clues available. GAME OVER");
+            finishGame(id, false);
+            setGameStatus(GameStatus.LOST);
+          }
+        }}
+        guess={guesses[guesses.length - 1]?.value}
+        actual={solution}
       />
     </div>
   );
