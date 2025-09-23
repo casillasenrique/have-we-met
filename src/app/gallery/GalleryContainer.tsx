@@ -10,16 +10,22 @@ interface GalleryContainerProps {
 
 function GalleryContainer({ wonObjects, wonGames }: GalleryContainerProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {wonObjects.map((o, idx) => {
-        if (o.status === "rejected") return;
-        return (
-          <div key={idx}>
-            <GalleryEntry objectData={o} gameData={wonGames[idx]} />
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <h1 className="text-black text-2xl font-bold mb-1">Your Gallery</h1>
+      <p className="text-sm text-gray-600 mb-6">
+        All the MET objects you’ve collected
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {wonObjects.map((o, idx) => {
+          if (o.status === "rejected") return;
+          return (
+            <div key={idx}>
+              <GalleryEntry objectData={o} gameData={wonGames[idx]} />
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 

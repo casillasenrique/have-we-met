@@ -48,10 +48,6 @@ export default function Gallery() {
 
   return (
     <div className="p-6">
-      <h1 className="text-black text-2xl font-bold mb-1">Your Gallery</h1>
-      <p className="text-sm text-gray-600 mb-6">
-        All the MET objects you’ve collected
-      </p>
       {isLoading ? (
         <FullPageSpinner />
       ) : isError ? (
