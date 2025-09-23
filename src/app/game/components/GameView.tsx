@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { cache, useEffect } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { PixelatedImage } from "./PixelatedImage";
@@ -14,7 +14,6 @@ import {
 } from "@/utils/constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
-import { Spinner } from "@/app/components/Spinner";
 import {
   addGuessToGame,
   finishGame,
@@ -76,7 +75,7 @@ export function GameView({
 
     // todo: MAKE SURE THIS LOG IS REMOVED
     console.log("Solution for debugging: ", solution);
-
+    setGameStatus(GameStatus.IN_PROGRESS);
     addGuessToGame(id, { value: guess } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: guess }]);
     // todo(enrique): normalize the special characters in the direct comparison
@@ -134,7 +133,9 @@ export function GameView({
         ) : (
           <PixelatedImage
             src={data.primaryImage}
-            revealed={gameStatus != GameStatus.IN_PROGRESS}
+            revealed={
+              gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST
+            }
             handleImageLoad={() => {
               setIsImageLoading(false);
             }}
@@ -154,7 +155,8 @@ export function GameView({
                   detail={data[key]}
                   visible={
                     guesses.length > index ||
-                    gameStatus !== GameStatus.IN_PROGRESS
+                    gameStatus === GameStatus.WON ||
+                    gameStatus === GameStatus.LOST
                   }
                 />
                 {guesses.length > index && (
@@ -167,7 +169,8 @@ export function GameView({
                 )}
               </div>
             ))}
-            {gameStatus === GameStatus.IN_PROGRESS && (
+            {(gameStatus === GameStatus.IN_PROGRESS ||
+              gameStatus === GameStatus.NOT_PLAYED) && (
               <div className="pt-4 flex justify-end gap-2">
                 <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                   Guess
@@ -247,7 +250,7 @@ function Banner({
   };
   return (
     <div className="bg-white p-4 sticky top-20 z-40 border-b border-primary">
-      {gameStatus !== GameStatus.IN_PROGRESS ? (
+      {gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST ? (
         <>
           <div className="flex items-center gap-1">
             <p>#{id}</p>

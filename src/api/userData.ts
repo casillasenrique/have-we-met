@@ -74,7 +74,7 @@ export function getOrCreateGameData(gameId: number): GameData {
     // If the game does not exist, create a new one with default values
     gameData = {
       id: gameId,
-      status: GameStatus.IN_PROGRESS, // Default status when a game is created
+      status: GameStatus.NOT_PLAYED, // Default status when a game is created
       guesses: [],
     };
     userData.playedGames.push(gameData);
