@@ -5,7 +5,7 @@ export default function Home() {
   const todaysGameId = getTodaysGameId();
   return (
     <div
-      className="w-screen h-screen bg-cover bg-top max-w-[1024px] text-primary flex flex-col justify-center items-center text-6xl font-bold"
+      className="w-screen h-screen bg-cover bg-top max-w-[768px] text-primary flex flex-col justify-center items-center text-6xl font-bold"
       style={{ backgroundImage: "url('/madame-x.png')" }}
     >
       <div className="w-3/4 flex flex-col items-center gap-8 mb-32">
