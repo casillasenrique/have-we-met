@@ -31,6 +31,11 @@ export function SubmissionModal({
           type="text"
           value={guess}
           onChange={(e) => setGuess(e.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              handleSubmit();
+            }
+          }}
           placeholder="Enter your guess"
           className="w-full border border-primary p-2 focus:outline-none focus:border-1 focus:border-primary focus:ring-1 focus:ring-primary"
         />
