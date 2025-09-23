@@ -1,6 +1,7 @@
 "use client";
 import { GAME_URL } from "@/utils/constants";
 import React from "react";
+import { toast } from "react-toastify";
 
 export function ShareModal({
   isOpen,
@@ -22,10 +23,13 @@ export function ShareModal({
     navigator.clipboard
       .writeText(shareText)
       .then(() => {
-        console.log("Copied to clipboard!");
+        toast.success("Copied to clipboard!", {
+          autoClose: 1000,
+          hideProgressBar: true,
+        });
       })
       .catch((err) => {
-        console.error("Failed to copy: ", err);
+        toast.error("Failed to copy to clipboard");
       });
   }
 
