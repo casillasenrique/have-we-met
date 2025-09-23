@@ -103,6 +103,9 @@ export function addGuessToGame(gameId: number, guess: Guess): void {
   if (game) {
     // If the game exists, add the guess
     game.guesses.push(guess);
+    if (game.guesses.length > 0) {
+      game.status = GameStatus.IN_PROGRESS;
+    }
   } else {
     console.error(
       `Game with ID ${gameId} not found in user data. Could not add guess.`

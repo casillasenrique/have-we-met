@@ -80,7 +80,6 @@ export function GameView({
 
     // todo: MAKE SURE THIS LOG IS REMOVED
     console.log("Solution for debugging: ", solution);
-    setGameStatus(GameStatus.IN_PROGRESS);
     addGuessToGame(id, { value: guess } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: guess }]);
     // todo(enrique): normalize the special characters in the direct comparison
@@ -113,7 +112,6 @@ export function GameView({
   }, [gameStatus]);
 
   const handleSkip = () => {
-    setGameStatus(GameStatus.IN_PROGRESS);
     // Store the guess in the game data as an empty guess
     addGuessToGame(id, { value: "" } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: "" }]);
