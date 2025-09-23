@@ -1,7 +1,12 @@
 import React from "react";
 import { GameView } from "../components/GameView";
-import { fetchObjectData, getObjectId } from "@/api/objectData";
+import {
+  fetchObjectData,
+  getObjectId,
+  getTodaysGameId,
+} from "@/api/objectData";
 import { GALLERY_NUMBER_ACCESSOR } from "../../../utils/constants";
+import { GameNotFound } from "../components/GameNotFound";
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for this route
 
 export default async function Game({
@@ -11,17 +16,13 @@ export default async function Game({
 }) {
   const { id } = await params;
   const gameId = parseInt(id, 10);
+  const todaysGameId = getTodaysGameId();
 
   // Get the object ID from the game ID
   const objectId = getObjectId(gameId);
 
   if (objectId === null) {
-    return (
-      <div>
-        <h1>Game Not Found</h1>
-        <p>No game found for ID {gameId}.</p>
-      </div>
-    );
+    return <GameNotFound />;
   }
 
   try {
@@ -29,7 +30,7 @@ export default async function Game({
     if (!data[GALLERY_NUMBER_ACCESSOR]) {
       throw new Error("Object is no longer on view!");
     }
-    return <GameView id={gameId} data={data} />;
+    return <GameView id={gameId} data={data} todaysGameId={todaysGameId} />;
   } catch (error) {
     return (
       <div>

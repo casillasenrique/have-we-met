@@ -29,7 +29,15 @@ import { FullPageSpinner } from "@/app/components/FullPageSpinner";
 import { ShareModal } from "./ShareModal";
 import { getEmojiString } from "@/utils/functions";
 
-export function GameView({ id, data }: { id: number; data: ObjectData }) {
+export function GameView({
+  id,
+  data,
+  todaysGameId,
+}: {
+  id: number;
+  data: ObjectData;
+  todaysGameId: number;
+}) {
   const clueKeys = (
     Object.keys(CLUE_ACCESSORS) as (keyof typeof CLUE_ACCESSORS)[]
   )
@@ -171,20 +179,30 @@ export function GameView({ id, data }: { id: number; data: ObjectData }) {
             )}
           </div>
           <div className="w-full pt-8 flex justify-between">
-            <Link
-              href={`/game/${id - 1}`}
-              className="text-primary flex items-center"
-            >
-              <span className="material-icons text-primary">arrow_left</span>
-              {/* TODO: need to verify there is a prev */}#{id - 1}
-            </Link>
-            <Link
-              href={`/game/${id + 1}`}
-              className="text-primary flex items-center"
-            >
-              {/* TODO: need to verify there is a next */}#{id + 1}
-              <span className="material-icons text-primary">arrow_right</span>
-            </Link>
+            {id > 1 ? (
+              <Link
+                href={`/game/${id - 1}`}
+                className={`flex items-center text-primary`}
+              >
+                <span className={`material-icons text-primary`}>
+                  arrow_left
+                </span>
+                #{id - 1}
+              </Link>
+            ) : (
+              <span></span>
+            )}
+            {id < todaysGameId ? (
+              <Link
+                href={`/game/${id + 1}`}
+                className="text-primary flex items-center"
+              >
+                {/* TODO: need to verify there is a next */}#{id + 1}
+                <span className="material-icons text-primary">arrow_right</span>
+              </Link>
+            ) : (
+              <span />
+            )}
           </div>
         </div>
       </div>
