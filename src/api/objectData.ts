@@ -10,15 +10,17 @@ const OBJECT_IDS_PATH = path.join(
   "objectIds.txt"
 );
 
+const allObjectIds: number[] | null = null;
+
 export type ObjectData = { [key: string]: string };
 
 /**
  * The global cache object to store object data.
  *
- * Maps game IDs to their corresponding object data.
+ * Maps object IDs to their corresponding object data.
  */
 type ObjectCache = {
-  [gameId: number]: { data: ObjectData; timestamp: number };
+  [objectId: number]: { data: ObjectData; timestamp: number };
 };
 
 const objectCache: ObjectCache = {};
@@ -37,7 +39,20 @@ let cachedIds: number[] | null = null;
  */
 let cachedDate: Date | null = null;
 
-function getEasternDateNow() {
+function loadObjectIds() {
+  if (allObjectIds) {
+    return allObjectIds;
+  }
+
+  return fs
+    .readFileSync(OBJECT_IDS_PATH, "utf-8")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map(Number);
+}
+
+export function getEasternDateNow() {
   const timeZone = "America/New_York";
   const now = new Date();
   return toZonedTime(now, timeZone);
@@ -50,8 +65,15 @@ function getDayIndexFromStart(start: Date, today: Date) {
 
 export function getObjectIdsToToday(): number[] {
   const today = getEasternDateNow();
+  console.log(
+    "server: Today's date (ET):",
+    today.toDateString(),
+    "| Cached date:",
+    cachedDate?.toDateString()
+  );
   // If the cached date is different from today, reset the cache
   if (!cachedDate || today.toDateString() !== cachedDate.toDateString()) {
+    console.log("Date has changed, resetting cached IDs");
     cachedIds = null;
   }
 
@@ -61,19 +83,7 @@ export function getObjectIdsToToday(): number[] {
   }
 
   // Otherwise read the file and populate cachedIds
-  console.log(
-    "Cache is not populated, reading object IDs from file. Cached date:",
-    cachedDate?.toDateString(),
-    "Today:",
-    today.toDateString()
-  );
-  const raw = fs.readFileSync(OBJECT_IDS_PATH, "utf-8");
-  const objectIds = raw
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .map(Number);
-
+  const objectIds = loadObjectIds();
   if (objectIds.length === 0) {
     throw new Error("No object IDs found in the file");
   }
@@ -84,6 +94,7 @@ export function getObjectIdsToToday(): number[] {
       `Today's index ${index} is out of bounds for the object IDs array`
     );
   }
+
   // Return only the object IDs up to today
   cachedIds = objectIds.slice(0, index + 1);
   cachedDate = today;
@@ -120,35 +131,36 @@ export function getTodaysGameId(): number {
 
 /**
  *
- * @param id - The ID of the game.
- * Fetches the object data for the given game ID.
+ * Fetches the object data for the given MET object ID.
+ *
+ * @param objectId - The ID of the object. Use getObjectId(gameId) to get this.
  * @returns the object data for the game.
  */
-export async function fetchObjectData(gameId: number) {
+export async function fetchObjectData(objectId: number) {
   // todo: add a TTL
   const now = Date.now();
 
   // Check if the data is in the cache and still valid
-  if (objectCache[gameId]) {
-    console.log(`Cache hit for ID ${gameId}`);
-    return objectCache[gameId].data;
+  if (objectCache[objectId]) {
+    console.log(`Cache hit for ID ${objectId}`);
+    return objectCache[objectId].data;
   }
 
   // Otherwise get the next game object ID
 
   // Fetch data from the external API
-  console.log(`Cache miss for ID ${gameId}, retrieving from API`);
+  console.log(`Cache miss for ID ${objectId}, retrieving from API`);
   const response = await fetch(
-    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${gameId}`
+    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectId}`
   );
   if (!response.ok) {
-    throw new Error(`Failed to fetch data for ID ${gameId}`);
+    throw new Error(`Failed to fetch data for ID ${objectId}`);
   }
 
   const data = await response.json();
 
   // Cache the response
-  objectCache[gameId] = { data, timestamp: now };
+  objectCache[objectId] = { data, timestamp: now };
 
   return data;
 }

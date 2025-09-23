@@ -7,7 +7,7 @@ import {
   OBJECT_DATE_ACCESSOR,
   OBJECT_TITLE_ACCESSOR,
   OBJECT_URL_ACCESSOR,
-} from "../game/constants";
+} from "@/utils/constants";
 import Link from "next/link";
 
 function GalleryEntry({
