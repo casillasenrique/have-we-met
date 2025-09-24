@@ -81,8 +81,6 @@ export function GameView({
     // Handle guess submission logic here
     console.log("Guess submitted: ", guess);
 
-    // todo: MAKE SURE THIS LOG IS REMOVED
-    console.log("Solution for debugging: ", solution);
     addGuessToGame(id, { value: guess } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: guess }]);
     // todo(enrique): normalize the special characters in the direct comparison
