@@ -73,6 +73,7 @@ export function GameView({
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
     setIsLoading(false);
+    console.log(`Game ${id} mounted`);
   }, []);
 
   const handleSubmitGuess = (guess: string) => {
