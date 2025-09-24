@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { toZonedTime } from "date-fns-tz";
 
-const START_DATE = new Date("2025-01-01T00:00:00-05:00"); // Midnight ET
+const START_DATE = new Date("2025-09-01T00:00:00-05:00"); // Midnight ET
 const OBJECT_IDS_PATH = path.join(
   process.cwd(),
   "src",
