@@ -33,24 +33,31 @@ function GalleryEntry({
       />
       <div className="flex flex-col py-3">
         <div>
-          <h1 className="text-sm text-primary font-bold">#{gameData.id}</h1>
-          <h1 className="text-sm font-bold">
-            {data[OBJECT_TITLE_ACCESSOR]}{" "}
-            {data[OBJECT_URL_ACCESSOR] && (
-              <a
-                href={data[OBJECT_URL_ACCESSOR]}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+          <div className="flex flex-col">
+            <Link
+              href={`/game/${gameData.id}`}
+              className="text-sm text-primary font-bold"
+            >
+              #{gameData.id}
+            </Link>
+
+            <a
+              href={data[OBJECT_URL_ACCESSOR]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-bold"
+            >
+              {data[OBJECT_TITLE_ACCESSOR]}{" "}
+              {data[OBJECT_URL_ACCESSOR] && (
                 <span
                   className="material-icons text-primary text-xs"
                   style={{ fontSize: "1rem" }}
                 >
                   open_in_new
                 </span>
-              </a>
-            )}
-          </h1>
+              )}
+            </a>
+          </div>
           <p className="text-xs font-light">{data[OBJECT_DATE_ACCESSOR]}</p>
           <p className="text-xs font-light">{data[ARTIST_NAME_ACCESSOR]}</p>
         </div>
