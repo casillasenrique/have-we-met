@@ -287,7 +287,7 @@ function Banner({
     return attributesArray.join(", ");
   };
   return (
-    <div className="bg-white p-4 sticky top-20 z-40 border-b border-primary">
+    <div className="bg-white p-4 sticky top-13 z-40 border-b border-primary">
       {gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST ? (
         <>
           <div className="flex items-center gap-1">

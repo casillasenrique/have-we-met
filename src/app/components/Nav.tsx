@@ -2,14 +2,21 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export function Nav({ todaysGameId }: { todaysGameId: number }) {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-40 flex items-center p-4 bg-primary text-white justify-between">
+    <nav className="sticky top-0 z-40 flex items-center h-13 px-4 py-2 bg-primary text-white justify-between">
       <Link href={"/"}>
-        <div className="text-lg w-[100px] leading-snug">HAVE WE MET?</div>
+        <Image
+          src="/logo.svg"
+          alt={"Have We Met"}
+          width={35}
+          height={35}
+          objectFit="cover"
+        />
       </Link>
       <ul className="flex items-center list-none m-0 ml-8 p-0 gap-6">
         {[
