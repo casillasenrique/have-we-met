@@ -299,24 +299,23 @@ function Banner({
             ) : (
               <span className="material-icons text-red-500">close</span>
             )}
-            <button onClick={onShare} className="text-sm flex">
+            <button onClick={onShare} className="text-sm flex cursor-pointer">
               <span className="material-icons text-primary">share</span>
             </button>
           </div>
-          <h1 className="text-2xl font-bold">
+          <a
+            href={data[OBJECT_URL_ACCESSOR]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-2xl font-bold"
+          >
             {data[OBJECT_TITLE_ACCESSOR]}{" "}
             {data[OBJECT_URL_ACCESSOR] && (
-              <a
-                href={data[OBJECT_URL_ACCESSOR]}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span className="material-icons text-primary text-xs">
-                  open_in_new
-                </span>
-              </a>
+              <span className="material-icons text-primary text-xs">
+                open_in_new
+              </span>
             )}
-          </h1>
+          </a>
           <p className="text-sm font-light">
             {formatAttributes([
               data[ARTIST_NAME_ACCESSOR],
