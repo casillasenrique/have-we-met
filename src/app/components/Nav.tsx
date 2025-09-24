@@ -20,14 +20,7 @@ export function Nav({ todaysGameId }: { todaysGameId: number }) {
           const isActive = pathname === href;
           return (
             <li key={href} className="relative">
-              <Link
-                href={href}
-                className={`relative z-10 ${
-                  isActive
-                    ? "underline underline-offset-8"
-                    : "hover:underline hover:underline-offset-8"
-                }`}
-              >
+              <Link href={href} className={`relative z-10`}>
                 {label}
               </Link>
               <motion.div

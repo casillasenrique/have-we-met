@@ -18,7 +18,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{
-            duration: 0.3,
+            duration: 0.2,
             ease: "easeInOut",
           }}
           onClick={onClose}
@@ -26,12 +26,12 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           {/* Stop propagation so clicking inside the content doesn’t close */}
           <motion.div
             key="modal-content"
-            className="relative z-10 bg-white rounded p-4 shadow-lg min-w-[300px] max-w-[600px]"
+            className="relative z-10 bg-white rounded p-4 shadow-lg min-w-[400px] max-w-[600px]"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{
-              duration: 0.3,
+              duration: 0.2,
               ease: "easeInOut",
             }}
             onClick={(e) => e.stopPropagation()}

@@ -22,9 +22,22 @@ export function Button({
     <motion.button
       onClick={onClick}
       className={`${baseClasses} ${variantClasses[variant]} ${className} focus:ring-4 focus:ring-blue-500`}
-      whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
-      whileTap={{ scale: 0.95, boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)" }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+        transition: { duration: 0.15 }, // shorter duration
+      }}
+      whileTap={{
+        scale: 0.95,
+        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+        transition: { duration: 0.1 }, // even quicker on tap
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 500, // higher stiffness = snappier
+        damping: 10, // higher damping to reduce bounce & speed up settle time
+        mass: 0.25, // optional: lighter mass can also speed things up
+      }}
     >
       {children}
     </motion.button>
