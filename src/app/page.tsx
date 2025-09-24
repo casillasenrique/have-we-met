@@ -10,7 +10,7 @@ export default function Home() {
     >
       <div className="w-3/4 flex flex-col items-center gap-8 mb-32">
         <div className="w-full">
-          <h1 className="py-1">have we</h1>
+          <h1 className="py-1">HAVE WE</h1>
           <h1 className="py-1">MET?</h1>
         </div>
         <Link className="w-full text-3xl flex" href={`/game/${todaysGameId}`}>

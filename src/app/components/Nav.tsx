@@ -9,7 +9,7 @@ export function Nav({ todaysGameId }: { todaysGameId: number }) {
   return (
     <nav className="sticky top-0 z-40 flex items-center p-4 bg-primary text-white justify-between">
       <Link href={"/"}>
-        <div className="text-lg w-[100px] leading-snug">have we MET?</div>
+        <div className="text-lg w-[100px] leading-snug">HAVE WE MET?</div>
       </Link>
       <ul className="flex items-center list-none m-0 ml-8 p-0 gap-6">
         {[

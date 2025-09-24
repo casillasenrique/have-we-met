@@ -12,7 +12,7 @@ export function HelpModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="How to play">
       <p>
-        Welcome to <b>Have We Met!</b>
+        Welcome to <b>HAVE WE MET</b>
       </p>
       <p>
         Try to find and guess the artwork on view at the Met - given a pixelated
