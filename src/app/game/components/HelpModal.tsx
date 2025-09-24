@@ -30,7 +30,7 @@ export function HelpModal({
         </p>
         <br />
         <span className="flex flex-wrap gap-1 items-center">
-          <p>If you think you know the art piece, press</p>
+          <p>If you think you know the art piece,</p><p> press</p>
           <p className="bg-primary text-white p-1 text-xs">GUESS</p>
           <p>to make a guess, or</p>
           <p className="bg-white text-primary p-1 text-xs border border-primary">
