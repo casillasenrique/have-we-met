@@ -48,6 +48,7 @@ export function HelpModal({
           </span>
         </a>
       </p> */}
+      <br />
       <p>
         <b>Hint:</b> Check out{" "}
         <a
