@@ -145,11 +145,9 @@ export function GameView({
               gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST
             }
             handleImageLoad={() => {
-              console.log("onLoad fired");
               setIsImageLoading(false);
             }}
             handleImageError={() => {
-              console.log("onError fired");
               setIsImageLoading(false);
               setisImageError(true);
             }}
