@@ -17,6 +17,7 @@ export function PixelatedImage({
     ? src
     : `/api/pixelatedImage?src=${encodeURIComponent(src)}`;
 
+  // Preload the image to ensure onLoad and onError fire correctly
   useEffect(() => {
     const img = new Image();
     img.src = imageSrc;
