@@ -130,7 +130,6 @@ export function getTodaysGameId(): number {
 }
 
 /**
- *
  * Fetches the object data for the given MET object ID.
  *
  * @param objectId - The ID of the object. Use getObjectId(gameId) to get this.
