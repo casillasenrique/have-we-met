@@ -2,6 +2,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import { Nav } from "./Nav";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -14,8 +15,9 @@ export default function RootLayout({
 
   return (
     <>
-      {pathname !== "/" && <Nav todaysGameId={todaysGameId}/>}
+      {pathname !== "/" && <Nav todaysGameId={todaysGameId} />}
       <main>{children}</main>
+      <ToastContainer autoClose={1000} hideProgressBar />
     </>
   );
 }

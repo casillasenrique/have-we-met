@@ -6,6 +6,9 @@
   --background: #ffffff;
   --foreground: #171717;
   --primary: #ea0028;
+
+  /* Toast variables */
+  --toastify-text-color-light: #171717;
 }
 
 @theme {
