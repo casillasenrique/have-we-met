@@ -7,7 +7,7 @@ export function Nav({ todaysGameId }: { todaysGameId: number }) {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky top-0 z-50 flex items-center p-4 bg-primary text-white justify-between">
+    <nav className="sticky top-0 z-40 flex items-center p-4 bg-primary text-white justify-between">
       <Link href={"/"}>
         <div className="text-lg w-[100px] leading-snug">have we MET?</div>
       </Link>

@@ -343,7 +343,7 @@ function Banner({
               className="flex items-center justify-center rounded-full w-6 h-6 border-primary border-2 mr-1"
               onClick={() => setIsHelpModalOpen(true)}
             >
-              <span className="material-icons text-primary text-xs!">
+              <span className="cursor-pointer material-icons text-primary text-xs!">
                 question_mark
               </span>
             </button>
