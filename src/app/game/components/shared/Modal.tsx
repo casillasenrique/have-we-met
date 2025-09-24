@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           {/* Stop propagation so clicking inside the content doesn’t close */}
           <motion.div
             key="modal-content"
-            className="relative z-10 bg-white rounded p-4 shadow-lg min-w-[400px]"
+            className="relative z-10 bg-white rounded p-4 shadow-lg min-w-[400px] max-w-[600px]"
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
