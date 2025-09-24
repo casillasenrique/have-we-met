@@ -24,7 +24,7 @@ export function CloseEnoughModal({
         <p className="text-lg font-medium">
           Did you mean <span className="text-primary">{actual}</span>?
         </p>
-        <p className="text-md font-md">You guessed {guess}</p>
+        <p className="text-md font-md">You guessed "{guess}"</p>
         <div className="flex justify-end gap-2 pt-4">
           <Button variant="primary" onClick={onConfirm}>
             Yes
