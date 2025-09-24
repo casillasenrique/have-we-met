@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { ObjectDataResponse } from "../api/objectData/route";
 import { GameData } from "@/api/userData";
 import {
   ARTIST_NAME_ACCESSOR,
@@ -9,22 +8,29 @@ import {
   OBJECT_URL_ACCESSOR,
 } from "@/utils/constants";
 import Link from "next/link";
+import { ObjectData } from "@/api/objectData";
 
 function GalleryEntry({
   objectData,
   gameData,
 }: {
-  objectData: ObjectDataResponse;
+  objectData: ObjectData;
   gameData: GameData;
 }) {
   console.log("gameData ", gameData);
-  const data = objectData.value;
   const numberGuesses = gameData.guesses.length;
+  const completionTime = gameData.completionTime
+    ? new Date(gameData.completionTime).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "unknown date";
 
   return (
     <div className="w-full">
       <Image
-        src={objectData.value.primaryImage}
+        src={objectData.primaryImage}
         alt={"image"}
         layout="responsive" // Image will scale based on container width
         width={100} // Defines the aspect ratio
@@ -42,13 +48,13 @@ function GalleryEntry({
             </Link>
 
             <a
-              href={data[OBJECT_URL_ACCESSOR]}
+              href={objectData[OBJECT_URL_ACCESSOR]}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-bold"
             >
-              {data[OBJECT_TITLE_ACCESSOR]}{" "}
-              {data[OBJECT_URL_ACCESSOR] && (
+              {objectData[OBJECT_TITLE_ACCESSOR]}{" "}
+              {objectData[OBJECT_URL_ACCESSOR] && (
                 <span
                   className="material-icons text-primary text-xs"
                   style={{ fontSize: "1rem" }}
@@ -58,12 +64,16 @@ function GalleryEntry({
               )}
             </a>
           </div>
-          <p className="text-xs font-light">{data[OBJECT_DATE_ACCESSOR]}</p>
-          <p className="text-xs font-light">{data[ARTIST_NAME_ACCESSOR]}</p>
+          <p className="text-xs font-light">
+            {objectData[OBJECT_DATE_ACCESSOR]}
+          </p>
+          <p className="text-xs font-light">
+            {objectData[ARTIST_NAME_ACCESSOR]}
+          </p>
         </div>
         <div className="flex flex-row">
           <p className="text-xs text-gray-500">
-            Met on {gameData.completionTime},{" "}
+            Met on {completionTime},{" "}
             <Link
               href={`/game/${gameData.id}`}
               className="text-xs text-gray-500 underline"
