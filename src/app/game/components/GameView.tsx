@@ -60,7 +60,6 @@ export function GameView({
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isCloseEnoughModalOpen, setIsCloseEnoughModalOpen] =
     useState<boolean>(false);
-  const [isHelpModalOpen, setIsHelpModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -180,14 +179,6 @@ export function GameView({
             {(gameStatus === GameStatus.IN_PROGRESS ||
               gameStatus === GameStatus.NOT_PLAYED) && (
               <div className="pt-4 flex justify-end gap-2 items-center">
-                <button
-                  className="flex items-center justify-center rounded-full w-6 h-6 border-primary border-2 mr-1"
-                  onClick={() => setIsHelpModalOpen(true)}
-                >
-                  <span className="material-icons text-primary text-xs!">
-                    question_mark
-                  </span>
-                </button>
                 <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                   Guess
                 </Button>
@@ -225,10 +216,7 @@ export function GameView({
           </div>
         </div>
       </div>
-      <HelpModal
-        isOpen={isHelpModalOpen}
-        onClose={() => setIsHelpModalOpen(false)}
-      />
+
       <SubmissionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -277,6 +265,8 @@ function Banner({
   gameStatus: GameStatus;
   onShare: () => void;
 }) {
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState<boolean>(false);
+
   const formatAttributes = (attributes: Array<string | undefined>) => {
     const attributesArray: Array<string> = [];
     attributes.forEach((attr) => {
@@ -316,7 +306,6 @@ function Banner({
               </a>
             )}
           </h1>
-          {/* TODO: make sure this exists */}
           <p className="text-sm font-light">
             {formatAttributes([
               data[ARTIST_NAME_ACCESSOR],
@@ -332,7 +321,23 @@ function Banner({
         </>
       ) : (
         <>
-          <h1 className="text-2xl font-bold">Have you MET #{id}?</h1>
+          <HelpModal
+            isOpen={isHelpModalOpen}
+            onClose={() => setIsHelpModalOpen(false)}
+          />
+          <div className="flex flex-row justify-between items-start">
+            <h1 className="text-2xl font-bold">Have you MET #{id}?</h1>
+
+            <button
+              className="flex items-center justify-center rounded-full w-6 h-6 border-primary border-2 mr-1"
+              onClick={() => setIsHelpModalOpen(true)}
+            >
+              <span className="material-icons text-primary text-xs!">
+                question_mark
+              </span>
+            </button>
+          </div>
+
           <p className="text-sm text-primary">
             {data[MEDIUM_ACCESSOR]}, {data[DIMENSIONS_ACCESSOR]}
           </p>
