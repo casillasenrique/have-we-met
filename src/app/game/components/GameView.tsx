@@ -29,6 +29,7 @@ import { ShareModal } from "./ShareModal";
 import { getEmojiString } from "@/utils/functions";
 import { CloseEnoughModal } from "./CloseEnoughModal";
 import { HelpModal } from "./HelpModal";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function GameView({
   id,
@@ -167,11 +168,20 @@ export function GameView({
                     gameStatus === GameStatus.LOST
                   }
                 />
-                {guesses.length > index && (
-                  <p className="text-xs text-gray-500">
-                    Your guess: {guesses[index].value || "Skipped"}
-                  </p>
-                )}
+                <AnimatePresence>
+                  {guesses.length > index && (
+                    <motion.p
+                      key={`guess-${index}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-xs text-gray-500"
+                    >
+                      Your guess: {guesses[index].value || "Skipped"}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
                 {index < clueKeys.length - 1 && (
                   <hr className="border-t border-gray-300" />
                 )}
@@ -184,7 +194,7 @@ export function GameView({
                   Guess
                 </Button>
                 <Button variant="secondary" onClick={handleSkip}>
-                  Skip
+                  {guesses.length < clueKeys.length ? "Skip" : "Give up"}
                 </Button>
               </div>
             )}
@@ -361,12 +371,50 @@ function Clue({
     <div className="flex flex-col gap-2">
       <p className="text-primary font-medium">{title}</p>
       <div className="flex justify-between items-center w-full border border-primary p-2 gap-6">
-        <p>{visible && detail}</p>
-        {visible ? (
-          <span className="material-icons text-primary">lock_open</span>
-        ) : (
-          <span className="material-icons text-primary">lock</span>
-        )}
+        <div className="flex-1">
+          <AnimatePresence>
+            {visible && (
+              <motion.p
+                key="detail"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {detail}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Lock icon sliding */}
+        <div className="relative w-8 h-8">
+          <AnimatePresence>
+            {visible ? (
+              <motion.span
+                key="lock_open"
+                className="material-icons text-primary absolute inset-0"
+                initial={{ x: 20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 20, opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                lock_open
+              </motion.span>
+            ) : (
+              <motion.span
+                key="lock"
+                className="material-icons text-primary absolute inset-0"
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -20, opacity: 0 }}
+                transition={{ duration: 0 }}
+              >
+                lock
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
