@@ -2,6 +2,7 @@ import React from "react";
 import { GameData } from "@/api/userData";
 import { ObjectDataResponse } from "../api/objectData/route";
 import { GalleryEntry } from "./GalleryEntry";
+import { Masonry } from "masonic";
 
 interface GalleryContainerProps {
   wonObjects: ObjectDataResponse[];
@@ -9,6 +10,14 @@ interface GalleryContainerProps {
 }
 
 function GalleryContainer({ wonObjects, wonGames }: GalleryContainerProps) {
+  const items = wonObjects
+    .map((o, idx) => ({
+      object: o,
+      game: wonGames[idx],
+      idx,
+    }))
+    .filter((item) => item.object.status !== "rejected");
+
   return (
     <>
       <h1 className="text-black text-2xl font-bold mb-1">Your Gallery</h1>
@@ -31,16 +40,22 @@ function GalleryContainer({ wonObjects, wonGames }: GalleryContainerProps) {
         </p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {wonObjects.map((o, idx) => {
-          if (o.status === "rejected") return;
+      <Masonry
+        items={items}
+        render={({ index, data, width }) => {
+          const { object, game, idx } = data;
           return (
-            <div key={idx}>
-              <GalleryEntry objectData={o} gameData={wonGames[idx]} />
+            <div key={idx} style={{ width }}>
+              <GalleryEntry objectData={object} gameData={game} />
             </div>
           );
-        })}
-      </div>
+        }}
+        columnWidth={150}
+        columnGutter={16}
+        itemHeightEstimate={300}
+        overscanBy={2}
+        itemKey={(data, index) => data.idx}
+      />
     </>
   );
 }
