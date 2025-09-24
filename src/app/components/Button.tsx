@@ -1,4 +1,4 @@
-import React from "react";
+import { motion } from "framer-motion";
 
 export function Button({
   children,
@@ -11,16 +11,22 @@ export function Button({
   className?: string;
   variant?: "primary" | "secondary";
 }) {
+  const baseClasses = `px-5 py-3 border border-primary uppercase focus:outline-none transition-all duration-300 ease-in-out`;
+
+  const variantClasses = {
+    primary: "bg-primary text-white hover:bg-primary-600",
+    secondary: "bg-white text-primary hover:bg-white-600",
+  };
+
   return (
-    <button
+    <motion.button
       onClick={onClick}
-      className={`px-5 py-3 border border-primary uppercase ${
-        variant === "primary"
-          ? "bg-primary text-white"
-          : "bg-white text-primary"
-      } ${className}`}
+      className={`${baseClasses} ${variantClasses[variant]} ${className} focus:ring-4 focus:ring-blue-500`}
+      whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)" }}
+      whileTap={{ scale: 0.95, boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)" }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

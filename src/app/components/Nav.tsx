@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 export function Nav({ todaysGameId }: { todaysGameId: number }) {
   const pathname = usePathname();
@@ -11,42 +12,34 @@ export function Nav({ todaysGameId }: { todaysGameId: number }) {
         <div className="text-lg w-[100px] leading-snug">have we MET?</div>
       </Link>
       <ul className="flex items-center list-none m-0 ml-8 p-0 gap-6">
-        <li>
-          <Link
-            href={`/game/${todaysGameId}`}
-            className={
-              pathname === `/game/${todaysGameId}`
-                ? `underline underline-offset-8`
-                : "hover:underline hover:underline-offset-8"
-            }
-          >
-            today
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/archive"
-            className={
-              pathname === "/archive"
-                ? `underline underline-offset-8`
-                : "hover:underline hover:underline-offset-8"
-            }
-          >
-            archive
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/gallery"
-            className={
-              pathname === "/gallery"
-                ? `underline underline-offset-8`
-                : "hover:underline hover:underline-offset-8"
-            }
-          >
-            gallery
-          </Link>
-        </li>
+        {[
+          { href: `/game/${todaysGameId}`, label: "today" },
+          { href: "/archive", label: "archive" },
+          { href: "/gallery", label: "gallery" },
+        ].map(({ href, label }) => {
+          const isActive = pathname === href;
+          return (
+            <li key={href} className="relative">
+              <Link
+                href={href}
+                className={`relative z-10 ${
+                  isActive
+                    ? "underline underline-offset-8"
+                    : "hover:underline hover:underline-offset-8"
+                }`}
+              >
+                {label}
+              </Link>
+              <motion.div
+                className="absolute bottom-0 left-0 w-full h-[2px] bg-white origin-left"
+                layoutId="underline"
+                initial={false}
+                animate={{ scaleX: isActive ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );
