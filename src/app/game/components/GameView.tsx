@@ -28,6 +28,7 @@ import { FullPageSpinner } from "@/app/components/FullPageSpinner";
 import { ShareModal } from "./ShareModal";
 import { getEmojiString } from "@/utils/functions";
 import { CloseEnoughModal } from "./CloseEnoughModal";
+import { HelpModal } from "./HelpModal";
 
 export function GameView({
   id,
@@ -59,6 +60,7 @@ export function GameView({
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isCloseEnoughModalOpen, setIsCloseEnoughModalOpen] =
     useState<boolean>(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -177,7 +179,15 @@ export function GameView({
             ))}
             {(gameStatus === GameStatus.IN_PROGRESS ||
               gameStatus === GameStatus.NOT_PLAYED) && (
-              <div className="pt-4 flex justify-end gap-2">
+              <div className="pt-4 flex justify-end gap-2 items-center">
+                <button
+                  className="flex items-center justify-center rounded-full w-6 h-6 border-primary border-2 mr-1"
+                  onClick={() => setIsHelpModalOpen(true)}
+                >
+                  <span className="material-icons text-primary text-xs!">
+                    question_mark
+                  </span>
+                </button>
                 <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                   Guess
                 </Button>
@@ -215,6 +225,10 @@ export function GameView({
           </div>
         </div>
       </div>
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+      />
       <SubmissionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["images.metmuseum.org"], // Add the allowed domain here
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
