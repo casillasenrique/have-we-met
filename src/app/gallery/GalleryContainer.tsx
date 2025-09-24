@@ -12,11 +12,25 @@ function GalleryContainer({ wonObjects, wonGames }: GalleryContainerProps) {
   return (
     <>
       <h1 className="text-black text-2xl font-bold mb-1">Your Gallery</h1>
-      <p className="text-sm text-gray-600 mb-6">
-        {wonObjects.length > 1
-          ? ` You've collected ${wonObjects.length} MET objects!`
-          : ` You've collected 1 MET object!`}
-      </p>
+
+      {wonObjects.length > 1 ? (
+        <p className="text-sm text-gray-600 mb-6">
+          You've collected{" "}
+          <span className="text-primary font-semibold">
+            {wonObjects.length}
+          </span>{" "}
+          MET objects!
+        </p>
+      ) : (
+        <p className="text-sm text-gray-600 mb-6">
+          You've collected{" "}
+          <span className="text-primary font-semibold">
+            {wonObjects.length}
+          </span>{" "}
+          MET object!
+        </p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {wonObjects.map((o, idx) => {
           if (o.status === "rejected") return;
