@@ -33,6 +33,7 @@ function GalleryEntry({
       />
       <div className="flex flex-col py-3">
         <div>
+          <h1 className="text-sm text-primary font-bold">#{gameData.id}</h1>
           <h1 className="text-sm font-bold">
             {data[OBJECT_TITLE_ACCESSOR]}{" "}
             {data[OBJECT_URL_ACCESSOR] && (
