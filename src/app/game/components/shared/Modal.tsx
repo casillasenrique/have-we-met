@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useLockBodyScroll } from "./useLockBodyScroll";
 
 type ModalProps = {
   title: string;
@@ -8,6 +9,7 @@ type ModalProps = {
 };
 
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  useLockBodyScroll(isOpen);
   return (
     <AnimatePresence>
       {isOpen && (

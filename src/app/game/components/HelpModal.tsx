@@ -34,7 +34,7 @@ export function HelpModal({
         We encourage you to play this in person at the Metropolitan Museum of
         Art on Fifth Avenue!
       </p>
-      <p>
+      {/* <p>
         Address:{" "}
         <a
           className="text-primary underline"
@@ -47,7 +47,7 @@ export function HelpModal({
             open_in_new
           </span>
         </a>
-      </p>
+      </p> */}
       <p>
         <b>Hint:</b> Check out{" "}
         <a
