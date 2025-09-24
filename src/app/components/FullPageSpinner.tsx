@@ -5,7 +5,9 @@ export function FullPageSpinner() {
   return (
     <div className="absolute inset-0 flex flex-col justify-center items-center z-50">
       <Spinner />
-      <p className="font-medium uppercase">loading MET object...</p>
+      <p className="text-lg font-medium uppercase text-primary">
+        loading MET object...
+      </p>
     </div>
   );
 }

@@ -22,7 +22,7 @@ export default async function Game({
   const objectId = getObjectId(gameId);
 
   if (objectId === null) {
-    return <GameNotFound />;
+    return <GameNotFound todaysGameId={todaysGameId} />;
   }
 
   try {
