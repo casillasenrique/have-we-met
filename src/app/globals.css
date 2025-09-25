@@ -20,3 +20,12 @@ body {
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
 }
+
+.nocopy {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* optional: disable context menu on iOS/WebKit */
+  -webkit-touch-callout: none;
+}

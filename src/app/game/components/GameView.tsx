@@ -152,39 +152,45 @@ export function GameView({
             }}
           />
         )}
-        <div className="flex flex-col justify-between p-4">
-          <div className="flex flex-col gap-4">
-            {clueKeys.map((key, index) => (
-              <div key={key} className="flex flex-col gap-4">
-                <Clue
-                  key={key}
-                  title={CLUE_ACCESSORS[key].title}
-                  detail={data[key]}
-                  visible={
-                    guesses.length > index ||
-                    gameStatus === GameStatus.WON ||
-                    gameStatus === GameStatus.LOST
-                  }
-                />
-                <AnimatePresence>
-                  {guesses.length > index && (
-                    <motion.p
-                      key={`guess-${index}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-xs text-gray-500"
-                    >
-                      Your guess: {guesses[index].value || "Skipped"}
-                    </motion.p>
+        <div className="flex flex-col justify-between p-3">
+          <div className="flex flex-col gap-3">
+            {clueKeys.map((key, index) => {
+              const visible =
+                guesses.length > index ||
+                gameStatus === GameStatus.WON ||
+                gameStatus === GameStatus.LOST;
+              return (
+                <div key={key} className="flex flex-col gap-2">
+                  <Clue
+                    key={key}
+                    title={CLUE_ACCESSORS[key].title}
+                    detail={data[key]}
+                    visible={visible}
+                  />
+                  <AnimatePresence>
+                    {guesses.length > index && (
+                      <motion.p
+                        key={`guess-${index}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-xs text-gray-500"
+                      >
+                        Your guess: {guesses[index].value || "Skipped"}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                  {index < clueKeys.length - 1 && (
+                    <hr
+                      className={`border-t border-gray-300 ${
+                        visible ? "mt-2" : "mt-4"
+                      }`}
+                    />
                   )}
-                </AnimatePresence>
-                {index < clueKeys.length - 1 && (
-                  <hr className="border-t border-gray-300" />
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
             {(gameStatus === GameStatus.IN_PROGRESS ||
               gameStatus === GameStatus.NOT_PLAYED) && (
               <div className="pt-4 flex justify-end gap-2 items-center">
@@ -337,10 +343,10 @@ function Banner({
             <h1 className="text-2xl font-bold">Have you MET #{id}?</h1>
 
             <button
-              className="flex items-center justify-center rounded-full w-6 h-6 border-primary border-2 mr-1"
+              className="flex items-center justify-center rounded-full w-6 h-6 border-gray-500 border-2 mr-1"
               onClick={() => setIsHelpModalOpen(true)}
             >
-              <span className="cursor-pointer material-icons text-primary text-xs!">
+              <span className="cursor-pointer material-icons text-gray-500 text-xs!">
                 question_mark
               </span>
             </button>
@@ -365,32 +371,53 @@ function Clue({
   visible?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-primary font-medium">{title}</p>
-      <div className="flex justify-between items-center w-full border border-primary p-2 gap-6">
+    <div className="flex flex-col gap-1">
+      <p
+        className={`font-medium text-sm ${
+          visible ? "text-primary" : "text-gray-500"
+        }`}
+      >
+        {title}
+      </p>
+      <div
+        className={`flex justify-between items-center w-full border p-2 gap-2 ${
+          visible ? "border-primary" : "border-gray-500"
+        }`}
+      >
         <div className="flex-1">
           <AnimatePresence>
-            {visible && (
-              <motion.p
-                key="detail"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {detail}
-              </motion.p>
-            )}
+            <motion.p
+              // You can keep it always mounted (no conditional rendering) so blur can animate smoothly
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={
+                visible
+                  ? { opacity: 1, filter: "blur(0px)" }
+                  : { opacity: 1, filter: "blur(5px)" }
+              }
+              exit={{ opacity: 0, filter: "blur(5px)" }}
+              transition={{ duration: 0.2 }}
+              className="text-sm nocopy"
+              onCopy={(e) => {
+                e.preventDefault();
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+              }}
+            >
+              {detail}
+            </motion.p>
           </AnimatePresence>
         </div>
 
         {/* Lock icon sliding */}
-        <div className="relative w-8 h-8">
+        <div className="relative w-6 h-6 ">
           <AnimatePresence>
             {visible ? (
               <motion.span
                 key="lock_open"
-                className="material-icons text-primary absolute inset-0"
+                className={`material-icons absolute inset-0 leading-none ${
+                  visible ? "text-primary" : "text-gray-400"
+                }`}
                 initial={{ x: 20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: 20, opacity: 0 }}
@@ -401,7 +428,9 @@ function Clue({
             ) : (
               <motion.span
                 key="lock"
-                className="material-icons text-primary absolute inset-0"
+                className={`material-icons absolute inset-0 leading-none ${
+                  visible ? "text-primary" : "text-gray-400"
+                }`}
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -20, opacity: 0 }}
