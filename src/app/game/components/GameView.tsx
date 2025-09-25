@@ -396,11 +396,13 @@ function Clue({
               }
               exit={{ opacity: 0, filter: "blur(5px)" }}
               transition={{ duration: 0.2 }}
-              className="text-sm nocopy"
+              className={`text-sm ${!visible && "nocopy"}`}
               onCopy={(e) => {
+                if (visible) return;
                 e.preventDefault();
               }}
               onContextMenu={(e) => {
+                if (visible) return;
                 e.preventDefault();
               }}
             >
