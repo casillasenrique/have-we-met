@@ -52,8 +52,6 @@ export function guessIsCloseEnough(
   objectTitle: string,
   guess: string
 ): boolean {
-  console.log("Comparing titles:", { objectTitle, guess });
-
   const normalizedTitle = normalizeTitle(objectTitle);
   const normalizedGuess = normalizeTitle(guess);
   const dist = distance(normalizedTitle, normalizedGuess);
@@ -63,9 +61,7 @@ export function guessIsCloseEnough(
   const length = Math.max(normalizedTitle.length, normalizedGuess.length);
   const threshold = Math.ceil(length * 0.4);
 
-  console.log("Normalized titles:", {
-    normalizedTitle,
-    normalizedGuess,
+  console.log("Distance between guess and solution:", {
     dist,
     threshold,
   });
