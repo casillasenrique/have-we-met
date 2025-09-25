@@ -3,8 +3,8 @@ import "./globals.css";
 import ClientLayout from "./components/ClientLayout";
 import { getTodaysGameId } from "@/api/objectData";
 import { Analytics } from "@vercel/analytics/next";
-import Head from "next/head";
 import { GAME_URL } from "@/utils/constants";
+import { Metadata } from "next";
 
 /**
  * Ensure dynamic rendering for this and all routes.
@@ -18,8 +18,39 @@ const TITLE = "Have We Met?";
 const DESCRIPTION = "A game to guess artwork at the Met Museum in New York";
 const KEYWORDS =
   "Met Museum, art, game, guessing game, artwork, bandle, wordle, puzzle, clues";
-const AUTHOR = "Enrique Casillas and Kelly Fang";
 const LARGE_IMAGE = "/main-image.jpg";
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: KEYWORDS,
+  authors: [
+    { name: "Kelly Fang", url: "https://kellyfang.vercel.app/" },
+    { name: "Enrique Casillas", url: "https://enriquecasillas.com" },
+  ],
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: GAME_URL,
+    images: [
+      {
+        url: LARGE_IMAGE,
+        width: 800,
+        height: 600,
+        alt: "Artwork at the Met Museum",
+      },
+    ],
+    siteName: TITLE,
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [LARGE_IMAGE],
+  },
+};
 
 export default function RootLayout({
   children,
@@ -31,21 +62,6 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <Head>
-        <title>{TITLE}</title>
-        <meta name="description" content={DESCRIPTION} />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="keywords" content={KEYWORDS} />
-        <meta name="author" content={AUTHOR} />
-        <meta property="og:title" content={TITLE} />
-        <meta property="og:description" content={DESCRIPTION} />
-        <meta property="og:image" content={LARGE_IMAGE} />
-        <meta property="og:url" content={GAME_URL} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={TITLE} />
-        <meta name="twitter:description" content={DESCRIPTION} />
-        <meta name="twitter:image" content={LARGE_IMAGE} />
-      </Head>
       <body className="bg-white ">
         <div className="max-w-[640px] min-h-screen mx-auto bg-white outline outline-primary">
           <ClientLayout todaysGameId={todaysGameId}>{children}</ClientLayout>
