@@ -11,6 +11,8 @@ import {
   ARTIST_NAME_ACCESSOR,
   OBJECT_DATE_ACCESSOR,
   OBJECT_URL_ACCESSOR,
+  CLOISTERS,
+  DEPARTMENT_ACCESSOR,
 } from "@/utils/constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
@@ -36,12 +38,10 @@ export function GameView({
   id,
   data,
   todaysGameId,
-  isAtCloisters = false,
 }: {
   id: number;
   data: ObjectData;
   todaysGameId: number;
-  isAtCloisters?: boolean;
 }) {
   const clueKeys = (
     Object.keys(CLUE_ACCESSORS) as (keyof typeof CLUE_ACCESSORS)[]
@@ -52,6 +52,7 @@ export function GameView({
     .slice(0, 5);
 
   const solution = data[OBJECT_TITLE_ACCESSOR];
+  const isAtCloisters = data[DEPARTMENT_ACCESSOR] === CLOISTERS;
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
@@ -85,6 +86,7 @@ export function GameView({
       (cachedData.status === GameStatus.IN_PROGRESS ||
         cachedData.status === GameStatus.NOT_PLAYED)
     ) {
+      console.log("Object deparment is The Cloisters. Showing modal.");
       setIsAtCloistersModalOpen(true);
     }
     console.log(`Game ${id} mounted`);
