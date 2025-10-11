@@ -13,6 +13,7 @@ import {
   OBJECT_URL_ACCESSOR,
   CLOISTERS,
   DEPARTMENT_ACCESSOR,
+  GALLERY_NUMBER_ACCESSOR,
 } from "@/utils/constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
@@ -28,11 +29,12 @@ import { ObjectData } from "@/api/objectData";
 import { guessIsCloseEnough } from "@/api/stringComparison";
 import { FullPageSpinner } from "@/app/components/FullPageSpinner";
 import { ShareModal } from "./ShareModal";
-import { getEmojiString } from "@/utils/functions";
+import { getEmojiString, isCompleted } from "@/utils/functions";
 import { CloseEnoughModal } from "./CloseEnoughModal";
 import { HelpModal } from "./HelpModal";
 import { AnimatePresence, motion } from "framer-motion";
 import { AtCloistersModal } from "./AtCloistersModal";
+import { ObjectNotOnViewModal } from "./ObjectNotOnViewModal";
 
 export function GameView({
   id,
@@ -53,6 +55,7 @@ export function GameView({
 
   const solution = data[OBJECT_TITLE_ACCESSOR];
   const isAtCloisters = data[DEPARTMENT_ACCESSOR] === CLOISTERS;
+  const noLongerOnView = !data[GALLERY_NUMBER_ACCESSOR];
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
@@ -66,6 +69,8 @@ export function GameView({
   const [isCloseEnoughModalOpen, setIsCloseEnoughModalOpen] =
     useState<boolean>(false);
   const [isAtCloistersModalOpen, setIsAtCloistersModalOpen] =
+    useState<boolean>(false);
+  const [isObjectNotOnViewModalOpen, setIsObjectNotOnViewModalOpen] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -81,14 +86,17 @@ export function GameView({
 
     // If the object is at The Cloisters (assuming they haven't already found it),
     // show a helpful modal to the user to avoid confusion about the location.
-    if (
-      isAtCloisters &&
-      (cachedData.status === GameStatus.IN_PROGRESS ||
-        cachedData.status === GameStatus.NOT_PLAYED)
-    ) {
+    if (isAtCloisters && !isCompleted(cachedData.status)) {
       console.log("Object deparment is The Cloisters. Showing modal.");
       setIsAtCloistersModalOpen(true);
     }
+
+    // If the object is no longer on view, show a modal to the user.
+    if (noLongerOnView && !isCompleted(cachedData.status)) {
+      console.warn("Object is no longer on view. Showing modal.");
+      setIsObjectNotOnViewModalOpen(true);
+    }
+
     console.log(`Game ${id} mounted`);
   }, []);
 
@@ -119,7 +127,7 @@ export function GameView({
   };
 
   useEffect(() => {
-    if (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) {
+    if (isCompleted(gameStatus)) {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -155,9 +163,7 @@ export function GameView({
         ) : (
           <PixelatedImage
             src={data.primaryImage}
-            revealed={
-              gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST
-            }
+            revealed={isCompleted(gameStatus)}
             handleImageLoad={() => {
               setIsImageLoading(false);
             }}
@@ -170,10 +176,7 @@ export function GameView({
         <div className="flex flex-col justify-between p-3">
           <div className="flex flex-col gap-3">
             {clueKeys.map((key, index) => {
-              const visible =
-                guesses.length > index ||
-                gameStatus === GameStatus.WON ||
-                gameStatus === GameStatus.LOST;
+              const visible = guesses.length > index || isCompleted(gameStatus);
               return (
                 <div key={key} className="flex flex-col gap-2">
                   <Clue
@@ -206,8 +209,7 @@ export function GameView({
                 </div>
               );
             })}
-            {(gameStatus === GameStatus.IN_PROGRESS ||
-              gameStatus === GameStatus.NOT_PLAYED) && (
+            {!isCompleted(gameStatus) && (
               <div className="pt-4 flex justify-end gap-2 items-center">
                 <Button variant="primary" onClick={() => setIsModalOpen(true)}>
                   Guess
@@ -284,6 +286,10 @@ export function GameView({
         isOpen={isAtCloistersModalOpen}
         onClose={() => setIsAtCloistersModalOpen(false)}
       />
+      <ObjectNotOnViewModal
+        isOpen={isObjectNotOnViewModalOpen}
+        onClose={() => setIsObjectNotOnViewModalOpen(false)}
+      />
     </div>
   );
 }
@@ -313,7 +319,7 @@ function Banner({
   };
   return (
     <div className="bg-white p-4 sticky top-13 z-40 border-b border-primary">
-      {gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST ? (
+      {isCompleted(gameStatus) ? (
         <>
           <div className="flex items-center gap-1">
             <p>#{id}</p>

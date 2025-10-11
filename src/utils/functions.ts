@@ -36,3 +36,7 @@ export function getEmojiString(
 
   return emojiString.join("");
 }
+
+export function isCompleted(status: GameStatus): boolean {
+  return status === GameStatus.WON || status === GameStatus.LOST;
+}

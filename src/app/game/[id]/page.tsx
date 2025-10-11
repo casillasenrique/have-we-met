@@ -5,9 +5,14 @@ import {
   getObjectId,
   getTodaysGameId,
 } from "@/api/objectData";
-import { GALLERY_NUMBER_ACCESSOR } from "../../../utils/constants";
 import { GameNotFound } from "../components/GameNotFound";
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for this route
+class GameNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "GameNotFoundError";
+  }
+}
 
 export default async function Game({
   params,
@@ -18,26 +23,26 @@ export default async function Game({
   const gameId = parseInt(id, 10);
   const todaysGameId = getTodaysGameId();
 
-  // Get the object ID from the game ID
-  const objectId = getObjectId(gameId);
-
-  if (objectId === null) {
-    return <GameNotFound todaysGameId={todaysGameId} />;
-  }
-
   try {
-    const data = await fetchObjectData(objectId);
-    console.log("Object dump:", data);
+    // Get the object ID from the game ID
+    const objectId = getObjectId(gameId);
 
-    if (!data[GALLERY_NUMBER_ACCESSOR]) {
-      throw new Error("Object is no longer on view!");
+    if (objectId === null) {
+      throw new GameNotFoundError("Game not found for the given ID.");
     }
+
+    const data = await fetchObjectData(objectId);
 
     return <GameView id={gameId} data={data} todaysGameId={todaysGameId} />;
   } catch (error) {
+    console.error((error as Error).message);
+    if (error instanceof GameNotFoundError) {
+      return <GameNotFound todaysGameId={todaysGameId} />;
+    }
+
     return (
       <div>
-        {/* TODO: error screen */}
+        {/* TODO: Generic error screen */}
         <h1>Error</h1>
         <p>{(error as Error).message}</p>
       </div>
