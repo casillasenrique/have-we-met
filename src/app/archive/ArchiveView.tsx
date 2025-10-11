@@ -27,8 +27,9 @@ export default function ArchiveView({ weeks }: { weeks: ArchiveDay[][] }) {
 
       switch (game?.status) {
         case GameStatus.WON:
-        case GameStatus.LOST:
           return DEFAULT_DAY_CIRCLE_STYLE + " bg-primary";
+        case GameStatus.LOST:
+          return DEFAULT_DAY_CIRCLE_STYLE + " lost-game";
         case GameStatus.IN_PROGRESS:
             return DEFAULT_DAY_CIRCLE_STYLE + " bg-primary/50";
         default:

@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
-@import 'material-icons/iconfont/material-icons.css';
+@import "material-icons/iconfont/material-icons.css";
 
 :root {
   --background: #ffffff;
@@ -18,7 +18,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .nocopy {
@@ -28,4 +28,32 @@ body {
   -ms-user-select: none;
   /* optional: disable context menu on iOS/WebKit */
   -webkit-touch-callout: none;
+}
+
+/* Add a diagonal slash for lost games */
+.lost-game {
+  position: relative; /* Ensure the pseudo-element is positioned relative to the circle */
+  overflow: hidden; /* Ensure the pseudo-element doesn't overflow the circle */
+}
+
+.lost-game::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130%; /* Make it wider than the circle to ensure it covers the diagonal */
+  height: 2px; /* Thickness of the slash */
+  background-color: var(--primary); /* Color of the slash */
+  transform: translate(-50%, -50%) rotate(-45deg); /* Center and rotate */
+}
+
+.lost-game::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130%; /* Make it wider than the circle to ensure it covers the diagonal */
+  height: 2px; /* Thickness of the slash */
+  background-color: var(--primary); /* Color of the slash */
+  transform: translate(-50%, -50%) rotate(45deg); /* Center and rotate */
 }
