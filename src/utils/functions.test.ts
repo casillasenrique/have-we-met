@@ -33,7 +33,7 @@ describe("getEmojiString", () => {
       5,
       GameStatus.WON
     );
-    expect(result).toBe("🟥⬜🟥🟩⬜⬜");
+    expect(result).toBe("🟥⬛🟥🟩⬜⬜");
   });
 
   test("should fill remaining slots with empty squares", () => {
@@ -48,11 +48,11 @@ describe("getEmojiString", () => {
 
   test("should handle edge case with all skips", () => {
     const result = getEmojiString(
-      [{ value: "" }, { value: "" }, { value: "" }],
+      [{ value: "" }, { value: "" }, { value: "" }, { value: "" }],
       3,
       GameStatus.LOST
     );
-    expect(result).toBe("⬜⬜⬜⬜");
+    expect(result).toBe("⬛⬛⬛⬛");
   });
 
   test("should handle edge case with all incorrect values", () => {

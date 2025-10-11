@@ -17,10 +17,10 @@ export function getEmojiString(
   numClues: number,
   gameStatus: GameStatus
 ): string {
-  const emojiString = guesses.map((guess, i) => {
+  const emojiString: ("⬛" | "🟩" | "🟥" | "⬜")[] = guesses.map((guess, i) => {
     if (guess.value === "") {
       // Skip
-      return "⬜";
+      return "⬛";
     }
     if (gameStatus === GameStatus.WON && i === guesses.length - 1) {
       // If the user won the game and this is their last guess, this must be the correct guess
