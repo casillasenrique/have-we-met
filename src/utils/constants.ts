@@ -5,9 +5,12 @@ export const ARTIST_NAME_ACCESSOR = "artistDisplayName";
 export const OBJECT_DATE_ACCESSOR = "objectDate";
 export const OBJECT_URL_ACCESSOR = "objectURL";
 export const GALLERY_NUMBER_ACCESSOR = "GalleryNumber";
+export const DEPARTMENT_ACCESSOR = "department";
+
+export const CLOISTERS = "The Cloisters";
 
 export const CLUE_ACCESSORS = {
-  department: { title: "Department" },
+  [DEPARTMENT_ACCESSOR]: { title: "Department" },
   [GALLERY_NUMBER_ACCESSOR]: { title: "Gallery Number" },
   [OBJECT_DATE_ACCESSOR]: { title: "Object Date" },
   artistNationality: { title: "Artist Nationality" },

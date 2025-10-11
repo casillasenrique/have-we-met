@@ -23,7 +23,7 @@ export function PixelatedImage({
     img.src = imageSrc;
 
     img.onload = () => {
-      console.log("Image loaded.");
+      console.debug("Image loaded.");
       handleImageLoad();
     };
     img.onerror = () => {
@@ -38,7 +38,7 @@ export function PixelatedImage({
       alt={`Pixelated image for ${src}`}
       onLoad={() => {
         handleImageLoad();
-        console.log("onLoad event triggered");
+        console.debug("onLoad event triggered");
       }}
       onError={handleImageError}
     />

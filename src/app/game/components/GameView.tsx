@@ -30,15 +30,18 @@ import { getEmojiString } from "@/utils/functions";
 import { CloseEnoughModal } from "./CloseEnoughModal";
 import { HelpModal } from "./HelpModal";
 import { AnimatePresence, motion } from "framer-motion";
+import { AtCloistersModal } from "./AtCloistersModal";
 
 export function GameView({
   id,
   data,
   todaysGameId,
+  isAtCloisters = false,
 }: {
   id: number;
   data: ObjectData;
   todaysGameId: number;
+  isAtCloisters?: boolean;
 }) {
   const clueKeys = (
     Object.keys(CLUE_ACCESSORS) as (keyof typeof CLUE_ACCESSORS)[]
@@ -61,6 +64,8 @@ export function GameView({
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isCloseEnoughModalOpen, setIsCloseEnoughModalOpen] =
     useState<boolean>(false);
+  const [isAtCloistersModalOpen, setIsAtCloistersModalOpen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -69,11 +74,19 @@ export function GameView({
       `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
 
-    console.log("cached guesses ", cachedData.guesses);
-
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
     setIsLoading(false);
+
+    // If the object is at The Cloisters (assuming they haven't already found it),
+    // show a helpful modal to the user to avoid confusion about the location.
+    if (
+      isAtCloisters &&
+      (cachedData.status === GameStatus.IN_PROGRESS ||
+        cachedData.status === GameStatus.NOT_PLAYED)
+    ) {
+      setIsAtCloistersModalOpen(true);
+    }
     console.log(`Game ${id} mounted`);
   }, []);
 
@@ -264,6 +277,10 @@ export function GameView({
         }}
         guess={guesses[guesses.length - 1]?.value}
         actual={solution}
+      />
+      <AtCloistersModal
+        isOpen={isAtCloistersModalOpen}
+        onClose={() => setIsAtCloistersModalOpen(false)}
       />
     </div>
   );

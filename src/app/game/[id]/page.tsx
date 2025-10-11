@@ -5,7 +5,11 @@ import {
   getObjectId,
   getTodaysGameId,
 } from "@/api/objectData";
-import { GALLERY_NUMBER_ACCESSOR } from "../../../utils/constants";
+import {
+  CLOISTERS,
+  DEPARTMENT_ACCESSOR,
+  GALLERY_NUMBER_ACCESSOR,
+} from "../../../utils/constants";
 import { GameNotFound } from "../components/GameNotFound";
 export const dynamic = "force-dynamic"; // Ensure dynamic rendering for this route
 
@@ -27,10 +31,26 @@ export default async function Game({
 
   try {
     const data = await fetchObjectData(objectId);
+    console.log("Object dump:", data);
+
     if (!data[GALLERY_NUMBER_ACCESSOR]) {
       throw new Error("Object is no longer on view!");
     }
-    return <GameView id={gameId} data={data} todaysGameId={todaysGameId} />;
+
+    let isAtCloisters = false;
+    if (data[DEPARTMENT_ACCESSOR] === CLOISTERS) {
+      console.log("Object deparment is The Cloisters");
+      isAtCloisters = true;
+    }
+
+    return (
+      <GameView
+        id={gameId}
+        data={data}
+        todaysGameId={todaysGameId}
+        isAtCloisters={isAtCloisters}
+      />
+    );
   } catch (error) {
     return (
       <div>
