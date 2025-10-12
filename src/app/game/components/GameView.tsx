@@ -14,6 +14,7 @@ import {
   CLOISTERS,
   DEPARTMENT_ACCESSOR,
   GALLERY_NUMBER_ACCESSOR,
+  OBJECT_NUMBER_ACCESSOR,
 } from "@/utils/constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
@@ -35,6 +36,7 @@ import { HelpModal } from "./HelpModal";
 import { AnimatePresence, motion } from "framer-motion";
 import { AtCloistersModal } from "./AtCloistersModal";
 import { ObjectNotOnViewModal } from "./ObjectNotOnViewModal";
+import { LoseModal } from "./LostModal";
 
 export function GameView({
   id,
@@ -76,6 +78,7 @@ export function GameView({
     useState<boolean>(false);
   const [isObjectNotOnViewModalOpen, setIsObjectNotOnViewModalOpen] =
     useState<boolean>(false);
+  const [isLoseModalOpen, setIsLoseModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -83,6 +86,8 @@ export function GameView({
     console.log(
       `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
+
+    console.log(data);
 
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
@@ -145,6 +150,10 @@ export function GameView({
    * as won and finished.
    */
   const initiateWin = () => {
+    // Close the lose modal if it was open. This will happen if the user completed
+    // the object number challenge.
+    setIsLoseModalOpen(false);
+
     finishGame(id, true);
     setGameStatus(GameStatus.WON);
   };
@@ -161,21 +170,39 @@ export function GameView({
    * challenge the loss.
    */
   const initiateLose = (isSkip: boolean) => {
-    console.log("No more clues available. Initiating loss sequence...");
+    console.log(
+      `No more clues available, isSkip=${isSkip}. Initiating loss sequence...`
+    );
 
-    // todo(enrique) Show the modal to challenge the loss if not a skip
+    // By default, the game is lost, so mark it as lost in local storage.
+    // If the user does complete the challenge in this active browser session,
+    // we will override the loss with a WIN.
+    // Importantly, don't update the local state yet.
+    finishGame(id, false);
+
+    // todo(enrique) Consider showing a modal in all cases
+    if (isSkip) {
+      finishLose();
+    } else {
+      setIsLoseModalOpen(true);
+    }
+  };
+
+  const finishLose = () => {
+    setIsLoseModalOpen(false);
+
     finishGame(id, false);
     setGameStatus(GameStatus.LOST);
   };
 
   useEffect(() => {
-    if (isCompleted(gameStatus)) {
+    if (isCompleted(gameStatus) || isLoseModalOpen) {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
     }
-  }, [gameStatus]);
+  }, [gameStatus, isLoseModalOpen]);
 
   return (
     <div className="h-full">
@@ -321,6 +348,12 @@ export function GameView({
       <ObjectNotOnViewModal
         isOpen={isObjectNotOnViewModalOpen}
         onClose={() => setIsObjectNotOnViewModalOpen(false)}
+      />
+      <LoseModal
+        isOpen={isLoseModalOpen}
+        objectNumber={data[OBJECT_NUMBER_ACCESSOR]}
+        onChallengeCompleted={initiateWin}
+        onChallengeFailed={finishLose}
       />
     </div>
   );
