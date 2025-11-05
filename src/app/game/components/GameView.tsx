@@ -14,6 +14,7 @@ import {
   CLOISTERS,
   DEPARTMENT_ACCESSOR,
   GALLERY_NUMBER_ACCESSOR,
+  OBJECT_NUMBER_ACCESSOR,
 } from "@/utils/constants";
 import { Button } from "../../components/Button";
 import { SubmissionModal } from "./SubmissionModal";
@@ -35,6 +36,7 @@ import { HelpModal } from "./HelpModal";
 import { AnimatePresence, motion } from "framer-motion";
 import { AtCloistersModal } from "./AtCloistersModal";
 import { ObjectNotOnViewModal } from "./ObjectNotOnViewModal";
+import { LoseModal } from "./LostModal";
 
 export function GameView({
   id,
@@ -60,11 +62,15 @@ export function GameView({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
   const [isImageError, setisImageError] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [guesses, setGuesses] = useState<Array<Guess>>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>(
     GameStatus.IN_PROGRESS
   );
+
+  /* Modals */
+
+  const [isSubmissionModalOpen, setIsSubmissionModalOpen] =
+    useState<boolean>(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
   const [isCloseEnoughModalOpen, setIsCloseEnoughModalOpen] =
     useState<boolean>(false);
@@ -72,6 +78,7 @@ export function GameView({
     useState<boolean>(false);
   const [isObjectNotOnViewModalOpen, setIsObjectNotOnViewModalOpen] =
     useState<boolean>(false);
+  const [isLoseModalOpen, setIsLoseModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     console.log(`Fetching existing game data for ID: ${id}`);
@@ -79,6 +86,8 @@ export function GameView({
     console.log(
       `Fetched cached data, game status: ${cachedData.status}; clues guessed: ${cachedData.guesses.length}`
     );
+
+    console.log(data);
 
     setGuesses(cachedData.guesses);
     setGameStatus(cachedData.status);
@@ -109,43 +118,91 @@ export function GameView({
     // todo(enrique): normalize the special characters in the direct comparison
     if (guess.toLowerCase() === solution.toLowerCase()) {
       console.log("Correct guess!");
-      // Handle correct guess logic here
       // Mark the game as finished and won
-      finishGame(id, true);
-      setGameStatus(GameStatus.WON);
+      initiateWin();
     } else if (guessIsCloseEnough(solution, guess)) {
+      // If the guess is close enough, show the close enough modal.
+      // The user can then confirm if they want to accept it as correct or not.
       console.log("CLOSE! Did you mean: ", solution);
       setIsCloseEnoughModalOpen(true);
     } else {
       if (guesses.length >= clueKeys.length) {
-        // If the user has used all clues, mark the game as lost
-        console.log("No more clues available. GAME OVER");
-        finishGame(id, false);
-        setGameStatus(GameStatus.LOST);
+        // User ran out of clues on a wrong guess
+        initiateLose(false);
       }
     }
   };
-
-  useEffect(() => {
-    if (isCompleted(gameStatus)) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  }, [gameStatus]);
 
   const handleSkip = () => {
     // Store the guess in the game data as an empty guess
     addGuessToGame(id, { value: "" } as Guess);
     setGuesses((prevGuesses) => [...prevGuesses, { value: "" }]);
     if (guesses.length >= clueKeys.length) {
-      // If the user has used all clues, mark the game as lost
-      console.log("No more clues available. GAME OVER");
-      finishGame(id, false);
-      setGameStatus(GameStatus.LOST);
+      // User ran out of clues on a skip
+      initiateLose(true);
     }
   };
+
+  /**
+   * Initiates the win sequence.
+   *
+   * Since wins usually involve no challenges, immediately mark the game
+   * as won and finished.
+   */
+  const initiateWin = () => {
+    // Close the lose modal if it was open. This will happen if the user completed
+    // the object number challenge.
+    setIsLoseModalOpen(false);
+
+    finishGame(id, true);
+    setGameStatus(GameStatus.WON);
+  };
+
+  /**
+   * Initiate the lose sequence.
+   *
+   * A game is lost when the user runs out of clues, but they may challenge
+   * that loss if they believe their final guess is correct.
+   *
+   * @param isSkip Whether the user is losing due to a skip (true) or a wrong
+   * guess (false).
+   * @note If the user initiates the loss due to a skip, they cannot
+   * challenge the loss.
+   */
+  const initiateLose = (isSkip: boolean) => {
+    console.log(
+      `No more clues available, isSkip=${isSkip}. Initiating loss sequence...`
+    );
+
+    // By default, the game is lost, so mark it as lost in local storage.
+    // If the user does complete the challenge in this active browser session,
+    // we will override the loss with a WIN.
+    // Importantly, don't update the local state yet.
+    finishGame(id, false);
+
+    // todo(enrique) Consider showing a modal in all cases
+    if (isSkip) {
+      finishLose();
+    } else {
+      setIsLoseModalOpen(true);
+    }
+  };
+
+  const finishLose = () => {
+    setIsLoseModalOpen(false);
+
+    finishGame(id, false);
+    setGameStatus(GameStatus.LOST);
+  };
+
+  useEffect(() => {
+    if (isCompleted(gameStatus) || isLoseModalOpen) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [gameStatus, isLoseModalOpen]);
 
   return (
     <div className="h-full">
@@ -211,7 +268,10 @@ export function GameView({
             })}
             {!isCompleted(gameStatus) && (
               <div className="pt-4 flex justify-end gap-2 items-center">
-                <Button variant="primary" onClick={() => setIsModalOpen(true)}>
+                <Button
+                  variant="primary"
+                  onClick={() => setIsSubmissionModalOpen(true)}
+                >
                   Guess
                 </Button>
                 <Button variant="secondary" onClick={handleSkip}>
@@ -250,8 +310,8 @@ export function GameView({
       </div>
 
       <SubmissionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isSubmissionModalOpen}
+        onClose={() => setIsSubmissionModalOpen(false)}
         onSubmit={handleSubmitGuess}
       />
       <ShareModal
@@ -268,15 +328,14 @@ export function GameView({
         onClose={() => setIsCloseEnoughModalOpen(false)}
         onConfirm={() => {
           setIsCloseEnoughModalOpen(false);
-          finishGame(id, true);
-          setGameStatus(GameStatus.WON);
+          initiateWin();
         }}
         onDeny={() => {
           setIsCloseEnoughModalOpen(false);
           if (guesses.length >= clueKeys.length) {
-            console.log("No more clues available. GAME OVER");
-            finishGame(id, false);
-            setGameStatus(GameStatus.LOST);
+            // Treat this as a user running out of clues on a guess,
+            // since they did guess to trigger the "close enough" sequence
+            initiateLose(false);
           }
         }}
         guess={guesses[guesses.length - 1]?.value}
@@ -289,6 +348,12 @@ export function GameView({
       <ObjectNotOnViewModal
         isOpen={isObjectNotOnViewModalOpen}
         onClose={() => setIsObjectNotOnViewModalOpen(false)}
+      />
+      <LoseModal
+        isOpen={isLoseModalOpen}
+        objectNumber={data[OBJECT_NUMBER_ACCESSOR]}
+        onChallengeCompleted={initiateWin}
+        onChallengeFailed={finishLose}
       />
     </div>
   );

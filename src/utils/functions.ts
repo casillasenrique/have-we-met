@@ -40,3 +40,12 @@ export function getEmojiString(
 export function isCompleted(status: GameStatus): boolean {
   return status === GameStatus.WON || status === GameStatus.LOST;
 }
+
+export function validateAccessionNumber(
+  accessionNumber: string,
+  input: string
+): boolean {
+  // We only care about the accession numbers' digits and periods
+  const clean = (str: string) => str.replace(/[^0-9.]/g, "");
+  return clean(accessionNumber) === clean(input);
+}

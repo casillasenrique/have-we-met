@@ -6,6 +6,7 @@ export const OBJECT_DATE_ACCESSOR = "objectDate";
 export const OBJECT_URL_ACCESSOR = "objectURL";
 export const GALLERY_NUMBER_ACCESSOR = "GalleryNumber";
 export const DEPARTMENT_ACCESSOR = "department";
+export const OBJECT_NUMBER_ACCESSOR = "accessionNumber";
 
 export const CLOISTERS = "The Cloisters";
 
