@@ -46,15 +46,12 @@ export function LoseModal({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <details
-            open={isDetailsOpen}
-            className="group border border-gray-300 rounded-md p-3 mt-2"
-            onToggle={(e) => setIsDetailsOpen(e.currentTarget.open)}
-          >
+          <div className="group border border-gray-300 rounded-md p-3 mt-2">
             <summary
               className={`${
                 failedChallenge ? "" : "cursor-pointer"
               } flex items-center justify-between text-primary font-medium opacity-70`}
+              onClick={() => setIsDetailsOpen(!isDetailsOpen)} // Toggle on click
             >
               {failedChallenge ? (
                 <span>Wrong object number!</span>
@@ -72,6 +69,7 @@ export function LoseModal({
                 </>
               )}
             </summary>
+
             <AnimatePresence>
               {isDetailsOpen && !failedChallenge && (
                 <motion.div
@@ -82,8 +80,7 @@ export function LoseModal({
                   className="mt-3"
                 >
                   <p>
-                    {`Enter the complete object number (typically found at the
-                    bottom of the museum label with a '#.#.#' format); ignoring any letters.`}
+                    {`Enter the complete object number (typically found at the bottom of the museum label with a '#.#.#' format); ignoring any letters.`}
                   </p>
                   <input
                     type="text"
@@ -110,7 +107,7 @@ export function LoseModal({
                 </motion.div>
               )}
             </AnimatePresence>
-          </details>
+          </div>
         </motion.div>
         <div className="flex justify-end gap-2 pt-4">
           <Button onClick={onChallengeFailed}>Reveal Art</Button>
